@@ -49,7 +49,7 @@ class TestMunger(unittest2.TestCase):
 
         # when I attempt to remove a section
         munger = baip_munger.Munger()
-        received = munger.remove_section(html, xpath)
+        received = munger.remove_section(html, xpath, 'table')
 
         # the resultant HTML should present an omitted table structure
         expected = self._source_with_table_removed_html
@@ -67,11 +67,29 @@ class TestMunger(unittest2.TestCase):
 
         # when I attempt to remove a section
         munger = baip_munger.Munger()
-        received = munger.remove_section(html, xpath)
+        received = munger.remove_section(html, xpath, 'p')
 
         # the resultant HTML should present an omitted paragraph structure
         expected = self._source_with_p_removed_html
         msg = 'Section removed error: paragraph'
+        self.assertEqual(received, expected, msg)
+
+    def test_remove_section_not_found(self):
+        """Remove a unmatched section from the HTML page.
+        """
+        # Given a source HTML page
+        html = self._source_html
+
+        # and an xpath definition to target a missing section to remove
+        xpath = '//p/*[text()="Banana"]'
+
+        # when I attempt to remove a section
+        munger = baip_munger.Munger()
+        received = munger.remove_section(html, xpath, 'p')
+
+        # the resultant HTML should present an unchanged structure
+        expected = self._source_html.rstrip()
+        msg = 'Section removed error: unmatched section'
         self.assertEqual(received, expected, msg)
 
     @classmethod
