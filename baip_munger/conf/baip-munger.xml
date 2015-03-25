@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2014 rel. 2 (http://www.altova.com) by Trevor Christie-Taylor (Bureau of Meteorology) -->
+<Doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Python273/PiRules.xsd">
+	<Section>
+		<sectionDescription><![CDATA[ Between the <style> tags]]></sectionDescription>
+		<startSection><![CDATA[<style>]]></startSection>
+		<endSection><![CDATA[</style>]]></endSection>
+		<paragraphRemover>
+			<startMarkers>p.MsoHeading7</startMarkers>
+			<endMarkers>;}</endMarkers>
+			<startMarkers>p.MsoHeading8</startMarkers>
+			<endMarkers>;}</endMarkers>
+			<startMarkers>p.MsoHeading9</startMarkers>
+			<endMarkers>;}</endMarkers>
+			<startMarkers>p.MsoIndex</startMarkers>
+			<endMarkers>;}</endMarkers>
+			<startMarkers>p.MsoToc</startMarkers>
+			<endMarkers>;}</endMarkers>
+		</paragraphRemover>
+	</Section>
+	<Section>
+		<sectionDescription><![CDATA[Tables]]></sectionDescription>
+		<startSection><![CDATA[<table]]></startSection>
+		<endSection><![CDATA[</table>]]></endSection>
+		<sectionRemover>
+			<removeIndicator>History of this document</removeIndicator>
+			<removeIndicator>summary="Log of issues and comments"</removeIndicator>			
+		</sectionRemover>
+	</Section>
+	<Section>
+		<sectionDescription><![CDATA[Images]]></sectionDescription>
+		<startSection><![CDATA[<img]]></startSection>
+		<endSection><![CDATA[">]]></endSection>
+		<sectionRemover>
+			<removeIndicator>image001.jpg</removeIndicator>
+			<removeIndicator>image005.jpg</removeIndicator>	
+			<removeIndicator>image004.png</removeIndicator>			
+			<removeIndicator>image006.jpg</removeIndicator>	
+			<removeIndicator>image007.jpg</removeIndicator>	
+			<removeIndicator>image015.jpg</removeIndicator>	
+			<removeIndicator>image016.jpg</removeIndicator>	
+    		<removeIndicator>image017.png</removeIndicator>	
+			<removeIndicator>image018.jpg</removeIndicator>	
+		</sectionRemover>
+	</Section>
+	<Headings>
+		<identifier Level = "1"><![CDATA[<h3]]></identifier>
+		<identifier Level = "2"><![CDATA[<h4]]></identifier>
+		<identifier Level = "3"><![CDATA[<h5]]></identifier>
+		<identifier Level = "4"><![CDATA[<h6]]></identifier>
+    </Headings>
+</Doc>
