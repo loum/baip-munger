@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Python273/PiRules.xsd">
+	<Section>
+		<sectionDescription><![CDATA[Tables]]></sectionDescription>
+		<startSection>table</startSection>
+		<endSection>table</endSection>
+		<sectionRemover>
+			<removeIndicator>summary=Log of issues and comments</removeIndicator>			
+		</sectionRemover>
+	</Section>
+</Doc>
