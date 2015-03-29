@@ -51,8 +51,8 @@ class TestXpathGen(unittest2.TestCase):
         received = xpathgen._extract_xpath_remove(conf_element_tree)
 
         # then I should receive a list of tuple structures of the form
-        # [('r', '//table')]
-        expected = [('r', '//table')]
+        # [('d', '//table')]
+        expected = [('d', '//table')]
         msg = 'Section remove XPath expressions list error'
         self.assertListEqual(received, expected, msg)
 
@@ -70,8 +70,8 @@ class TestXpathGen(unittest2.TestCase):
         received = xpathgen._extract_xpath_remove(conf_element_tree)
 
         # then I should receive a list of tuple structures of the form
-        # [('r', '//table')]
-        expected = [('r', '//table')]
+        # [('d', '//table')]
+        expected = [('d', '//table')]
         msg = 'Section remove XPath expressions list error'
         self.assertListEqual(received, expected, msg)
 

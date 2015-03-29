@@ -78,6 +78,6 @@ class XpathGen(object):
                 xpath = '//{0}'.format(start_section[0].text)
 
             log.debug('Generated sectionRemove xpath: "%s"' % xpath)
-            xpath_expressions.append(('r', xpath))
+            xpath_expressions.append(('d', xpath))
 
         return xpath_expressions

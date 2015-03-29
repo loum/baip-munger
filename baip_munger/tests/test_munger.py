@@ -10,22 +10,29 @@ class TestMunger(unittest2.TestCase):
     def setUpClass(cls):
         test_dir = os.path.join('baip_munger', 'tests', 'files')
         results_dir = os.path.join('baip_munger', 'tests', 'results')
+        cls._results_dir = os.path.join('baip_munger', 'tests', 'results')
         test_html_page = 'source.htm'
         table_removed_html_page = 'source_with_table_removed.htm'
         p_removed_html_page = 'source_with_p_removed.htm'
+        baip_generated = '1123-climate.htm'
 
-        # Source HTML page
+        # Source HTML page.
         test_html_fh = open(os.path.join(test_dir, test_html_page))
         cls._source_html = test_html_fh.read()
         test_html_fh.close()
 
-        # Source with table removed HTML page
+        # Source BAIP generated.
+        test_html_fh = open(os.path.join(test_dir, baip_generated))
+        cls._source_baip_generated = test_html_fh.read()
+        test_html_fh.close()
+
+        # Source with table removed HTML page.
         test_html_fh = open(os.path.join(results_dir,
                                          table_removed_html_page))
         cls._source_with_table_removed_html = test_html_fh.read()
         test_html_fh.close()
 
-        # Source with nested paragraph removed HTML page
+        # Source with nested paragraph removed HTML page.
         test_html_fh = open(os.path.join(results_dir,
                                          p_removed_html_page))
         cls._source_with_p_removed_html = test_html_fh.read()
@@ -92,8 +99,35 @@ class TestMunger(unittest2.TestCase):
         msg = 'Section removed error: unmatched section'
         self.assertEqual(received, expected, msg)
 
+    def test_delete_element_attribute(self):
+        """Search and replace: delete element attribute
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated
+
+        # and an xpath definition to target a HTML element
+        xpath = "//table[@class='TableBAHeaderRow']/thead/tr/td/p"
+
+        # and an attribute name to remove
+        attr = 'align'
+
+        # when I attempt to search and delete
+        munger = baip_munger.Munger(html)
+        munger.search_replace_attribute(xpath, attr)
+        received = munger.dump_root()
+
+        # the resultant HTML should present an omitted element attribute
+        result_fh = open(os.path.join(self._results_dir,
+                                      '1123-climate-remove-attr.htm'))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Search and replace: delete attribute error'
+        self.assertEqual(received, expected, msg)
+
     @classmethod
     def tearDownClass(cls):
         cls._source_html = None
+        cls._results_dir = None
         cls._source_with_table_removed_html = None
         cls._source_with_p_removed_html = None
+        cls._source_baip_generated = None
