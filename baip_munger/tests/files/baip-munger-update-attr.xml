@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Section>
+		<sectionDescription>Delete attribute</sectionDescription>
+		<xpath>//table[@class='TableBAHeaderRow']/thead/tr/td/p</xpath>
+		<sectionDeleteAttribute>
+            <attributeName>class</attributeName>
+        </sectionDeleteAttribute>
+	</Section>
+</Doc>

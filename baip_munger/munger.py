@@ -19,7 +19,6 @@ class Munger(object):
 
     @root.setter
     def root(self, value):
-        log.debug('type html: %s' % type(value))
         self._root = lxml.html.fromstring(value)
 
     def dump_root(self):
@@ -98,9 +97,10 @@ class Munger(object):
 
         for tag in self.root.xpath(xpath):
             if value is None:
-                log.debug('Removing attr "%s" from tag "%s"' % (attribute,
-                                                                tag.tag))
-                tag.attrib.pop(attribute)
+                if tag.attrib.get(attribute):
+                    log.debug('Removing attr "%s" from tag "%s"' %
+                              (attribute, tag.tag))
+                    tag.attrib.pop(attribute)
             else:
                 if tag.attrib.get(attribute) is not None:
                     log.debug('Updating attr "%s" from tag "%s" with "%s"' %

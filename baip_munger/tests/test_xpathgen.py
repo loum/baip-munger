@@ -75,6 +75,30 @@ class TestXpathGen(unittest2.TestCase):
         msg = 'Section remove XPath expressions list error'
         self.assertListEqual(received, expected, msg)
 
+    def test_delete_element_attributes_configuration(self):
+        """Delete element attribute configuration.
+        """
+        # Given a Munger configuration file with target xpath expression
+        conf_file = os.path.join(self._conf_dir,
+                                 'baip-munger-update-attr.xml')
+        xpathgen = baip_munger.XpathGen(conf_file)
+
+        # when I parse a sectionDeleteAttribute configuration element
+        received = xpathgen.parse_configuration()
+
+        # then I should receive a list of dictionary structures of the
+        # form
+        # [{'xpath': '<xpath_expr>',
+        #   'attribute': '<attr_name>'}]
+        expected = [
+            {
+                'xpath': "//table[@class='TableBAHeaderRow']/thead/tr/td/p",
+                'attribute': 'class'
+            }
+        ]
+        msg = 'Delete element attribute config item error'
+        self.assertListEqual(received, expected, msg)
+
     @classmethod
     def tearDownClass(cls):
         cls._conf_dir = None

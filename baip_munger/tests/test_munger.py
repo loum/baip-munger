@@ -124,6 +124,28 @@ class TestMunger(unittest2.TestCase):
         msg = 'Attribute update: delete attribute error'
         self.assertEqual(received, expected, msg)
 
+    def test_update_element_attribute_delete_missing_attr_context(self):
+        """Update element attribute: delete missing attribute.
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated
+
+        # and an xpath definition to target a HTML element
+        xpath = "//table[@class='TableBAHeaderRow']/thead/tr/td/p"
+
+        # and an undefined attribute name to remove
+        attr = 'banana'
+
+        # when I attempt to search and delete
+        munger = baip_munger.Munger(html)
+        munger.update_element_attribute(xpath, attr)
+        received = munger.dump_root()
+
+        # the resultant HTML should unchanged
+        expected = html
+        msg = 'Attribute update: delete undefined attribute error'
+        self.assertEqual(received, expected, msg)
+
     def test_update_element_attribute_update_context(self):
         """Update element attribute: update.
         """
