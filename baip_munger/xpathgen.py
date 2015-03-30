@@ -132,4 +132,14 @@ class XpathGen(object):
 
                     config_items.append(conf_item)
 
+            for action in section.xpath('sectionAddAttribute'):
+                attr = action.xpath('attributeName/text()')
+                value = action.xpath('attributeValue/text()')
+                if len(attr) and len(value):
+                    conf_item['attribute'] = attr[0]
+                    conf_item['value'] = value[0]
+                    conf_item['add'] = True
+
+                    config_items.append(conf_item)
+
         return config_items

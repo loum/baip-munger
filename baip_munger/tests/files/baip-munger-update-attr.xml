@@ -15,4 +15,12 @@
             <attributeValue>TableText</attributeValue>
         </sectionUpdateAttribute>
 	</Section>
+	<Section>
+		<sectionDescription>Update attribute</sectionDescription>
+		<xpath>//table[@class='TableBAHeaderRow']/thead/tr/td/p[@class='TableHeading']</xpath>
+		<sectionAddAttribute>
+            <attributeName>style</attributeName>
+            <attributeValue>margin-bottom:1.0pt</attributeValue>
+        </sectionAddAttribute>
+	</Section>
 </Doc>

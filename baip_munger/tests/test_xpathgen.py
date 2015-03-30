@@ -103,6 +103,14 @@ class TestXpathGen(unittest2.TestCase):
                'attribute': 'class',
                'value': 'TableText',
             },
+            {
+                'xpath':
+                    ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
+                     ('TableBAHeaderRow', 'TableHeading')),
+               'attribute': 'style',
+               'value': 'margin-bottom:1.0pt',
+               'add': True,
+            },
         ]
         msg = 'Delete element attribute config item error'
         self.assertListEqual(received, expected, msg)
