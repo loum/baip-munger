@@ -66,12 +66,19 @@ class Munger(object):
 
         return lxml.html.tostring(root)
 
-    def update_element_attribute(self, xpath, attribute, value=None):
+    def update_element_attribute(self,
+                                 xpath,
+                                 attribute,
+                                 value=None,
+                                 add=False):
         """Update element *attribute* from *xpath* expression search.
 
         If *value* is ``None`` then the attribute will be deleted.
         Otherwise, the existing attribute value will be replaced with
         the string contained within *value*.
+
+        If the *attribute* is not part of the tag definition and
+        *add* is set to ``True`` then the attribute will be added
 
         **Args:**
             *xpath*: standard XPath expression used to query against *html*
@@ -79,6 +86,9 @@ class Munger(object):
             *attribute*: element attribute name to remove
 
             *value*: if not ``None``, string to replace *attribute* value
+
+            *add*: boolean flag which if set, will add the attribute
+            if it already not part of the tag definition
 
         **Returns:**
             the resultant HTML document as a string
@@ -92,7 +102,13 @@ class Munger(object):
                                                                 tag.tag))
                 tag.attrib.pop(attribute)
             else:
-                log.debug('Updating attr "%s" from tag "%s" with "%s"' %
-                          (attribute, tag.tag, value))
+                if tag.attrib.get(attribute) is not None:
+                    log.debug('Updating attr "%s" from tag "%s" with "%s"' %
+                              (attribute, tag.tag, value))
 
-                tag.attrib[attribute] = value
+                    tag.attrib[attribute] = value
+                elif add:
+                    log.debug('Adding attr "%s" from tag "%s" with "%s"' %
+                              (attribute, tag.tag, value))
+
+                    tag.attrib[attribute] = value

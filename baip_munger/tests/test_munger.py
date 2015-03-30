@@ -153,6 +153,61 @@ class TestMunger(unittest2.TestCase):
         msg = 'Attribute update: update attribute error'
         self.assertEqual(received, expected, msg)
 
+    def test_update_element_attribute_update_context_no_add_if_missing(self):
+        """Update element attribute: update no add if missing.
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated
+
+        # and an xpath definition to target a HTML element
+        xpath = ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
+                 ('TableBAHeaderRow', 'TableHeading'))
+
+        # and an attribute name to update which is not defined
+        attr = 'fruit'
+
+        # and an attribute value
+        value = 'banana'
+
+        # when I attempt to search and replace
+        munger = baip_munger.Munger(html)
+        munger.update_element_attribute(xpath, attr, value)
+        received = munger.dump_root()
+
+        # the resultant HTML should not be altered
+        expected = html
+        msg = 'Attribute update: update attribute error add if missing'
+        self.assertEqual(received, expected, msg)
+
+    def test_update_element_attribute_add_context(self):
+        """Update element attribute: add.
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated
+
+        # and an xpath definition to target a HTML element
+        xpath = ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
+                 ('TableBAHeaderRow', 'TableHeading'))
+
+        # and an attribute name to add
+        attr = 'style'
+
+        # and an attribute value to replace
+        value = 'margin-bottom:1.0pt'
+
+        # when I attempt to search and add
+        munger = baip_munger.Munger(html)
+        munger.update_element_attribute(xpath, attr, value, add=True)
+        received = munger.dump_root()
+
+        # the resultant HTML should present an omitted element attribute
+        result_fh = open(os.path.join(self._results_dir,
+                                      '1123-climate-add-attr.htm'))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Attribute update: add attribute error'
+        self.assertEqual(received, expected, msg)
+
     @classmethod
     def tearDownClass(cls):
         cls._source_html = None
