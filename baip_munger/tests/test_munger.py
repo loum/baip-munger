@@ -99,8 +99,8 @@ class TestMunger(unittest2.TestCase):
         msg = 'Section removed error: unmatched section'
         self.assertEqual(received, expected, msg)
 
-    def test_delete_element_attribute(self):
-        """Search and replace: delete element attribute
+    def test_update_element_attribute_delete_context(self):
+        """Update element attribute: delete.
         """
         # Given a source HTML page
         html = self._source_baip_generated
@@ -113,7 +113,7 @@ class TestMunger(unittest2.TestCase):
 
         # when I attempt to search and delete
         munger = baip_munger.Munger(html)
-        munger.search_replace_attribute(xpath, attr)
+        munger.update_element_attribute(xpath, attr)
         received = munger.dump_root()
 
         # the resultant HTML should present an omitted element attribute
@@ -121,7 +121,36 @@ class TestMunger(unittest2.TestCase):
                                       '1123-climate-remove-attr.htm'))
         expected = result_fh.read().rstrip()
         result_fh.close()
-        msg = 'Search and replace: delete attribute error'
+        msg = 'Attribute update: delete attribute error'
+        self.assertEqual(received, expected, msg)
+
+    def test_update_element_attribute_update_context(self):
+        """Update element attribute: update.
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated
+
+        # and an xpath definition to target a HTML element
+        xpath = ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
+                 ('TableBAHeaderRow', 'TableHeading'))
+
+        # and an attribute name to update
+        attr = 'class'
+
+        # and an attribute value to replace
+        value = 'TableText'
+
+        # when I attempt to search and replace
+        munger = baip_munger.Munger(html)
+        munger.update_element_attribute(xpath, attr, value)
+        received = munger.dump_root()
+
+        # the resultant HTML should present an omitted element attribute
+        result_fh = open(os.path.join(self._results_dir,
+                                      '1123-climate-update-attr.htm'))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Attribute update: update attribute error'
         self.assertEqual(received, expected, msg)
 
     @classmethod

@@ -66,13 +66,19 @@ class Munger(object):
 
         return lxml.html.tostring(root)
 
-    def delete_element_attribute(self, xpath, attribute):
-        """Delete element *attribute* from *xpath* expression search.
+    def update_element_attribute(self, xpath, attribute, value=None):
+        """Update element *attribute* from *xpath* expression search.
+
+        If *value* is ``None`` then the attribute will be deleted.
+        Otherwise, the existing attribute value will be replaced with
+        the string contained within *value*.
 
         **Args:**
             *xpath*: standard XPath expression used to query against *html*
 
             *attribute*: element attribute name to remove
+
+            *value*: if not ``None``, string to replace *attribute* value
 
         **Returns:**
             the resultant HTML document as a string
@@ -81,6 +87,12 @@ class Munger(object):
         log.debug('Search/replace XPath: "%s"' % xpath)
 
         for tag in self.root.xpath(xpath):
-            log.debug('Removing attr "%s" from tag "%s"' % (attribute,
-                                                            tag.tag))
-            tag.attrib.pop(attribute)
+            if value is None:
+                log.debug('Removing attr "%s" from tag "%s"' % (attribute,
+                                                                tag.tag))
+                tag.attrib.pop(attribute)
+            else:
+                log.debug('Updating attr "%s" from tag "%s" with "%s"' %
+                          (attribute, tag.tag, value))
+
+                tag.attrib[attribute] = value
