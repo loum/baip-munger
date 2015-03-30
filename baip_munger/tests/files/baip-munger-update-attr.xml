@@ -7,4 +7,12 @@
             <attributeName>class</attributeName>
         </sectionDeleteAttribute>
 	</Section>
+	<Section>
+		<sectionDescription>Update attribute</sectionDescription>
+		<xpath>//table[@class='TableBAHeaderRow']/thead/tr/td/p[@class='TableHeading']</xpath>
+		<sectionUpdateAttribute>
+            <attributeName>class</attributeName>
+            <attributeValue>TableText</attributeValue>
+        </sectionUpdateAttribute>
+	</Section>
 </Doc>

@@ -121,6 +121,15 @@ class XpathGen(object):
                 if len(attr):
                     conf_item['attribute'] = attr[0]
 
-                config_items.append(conf_item)
+                    config_items.append(conf_item)
+
+            for action in section.xpath('sectionUpdateAttribute'):
+                attr = action.xpath('attributeName/text()')
+                value = action.xpath('attributeValue/text()')
+                if len(attr) and len(value):
+                    conf_item['attribute'] = attr[0]
+                    conf_item['value'] = value[0]
+
+                    config_items.append(conf_item)
 
         return config_items

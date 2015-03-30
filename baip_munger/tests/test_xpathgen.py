@@ -75,8 +75,8 @@ class TestXpathGen(unittest2.TestCase):
         msg = 'Section remove XPath expressions list error'
         self.assertListEqual(received, expected, msg)
 
-    def test_delete_element_attributes_configuration(self):
-        """Delete element attribute configuration.
+    def test_update_element_attributes_configuration(self):
+        """Update element attribute configuration.
         """
         # Given a Munger configuration file with target xpath expression
         conf_file = os.path.join(self._conf_dir,
@@ -89,12 +89,20 @@ class TestXpathGen(unittest2.TestCase):
         # then I should receive a list of dictionary structures of the
         # form
         # [{'xpath': '<xpath_expr>',
-        #   'attribute': '<attr_name>'}]
+        #   'attribute': '<attr_name>'},
+        #  {...}]
         expected = [
             {
                 'xpath': "//table[@class='TableBAHeaderRow']/thead/tr/td/p",
-                'attribute': 'class'
-            }
+                'attribute': 'class',
+            },
+            {
+                'xpath':
+                    ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
+                     ('TableBAHeaderRow', 'TableHeading')),
+               'attribute': 'class',
+               'value': 'TableText',
+            },
         ]
         msg = 'Delete element attribute config item error'
         self.assertListEqual(received, expected, msg)
