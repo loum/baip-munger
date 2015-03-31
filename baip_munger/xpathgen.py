@@ -115,8 +115,11 @@ class XpathGen(object):
         for section in self.root.xpath('//Doc/Section'):
             xpath = section.xpath('xpath/text()')
 
-            conf_item = {'xpath': xpath[0]}
+            if not len(xpath):
+                continue
+
             for action in section.xpath('sectionDeleteAttribute'):
+                conf_item = {'xpath': xpath[0]}
                 attr = action.xpath('attributeName/text()')
                 if len(attr):
                     conf_item['attribute'] = attr[0]
@@ -124,20 +127,27 @@ class XpathGen(object):
                     config_items.append(conf_item)
 
             for action in section.xpath('sectionUpdateAttribute'):
+                conf_item = {'xpath': xpath[0]}
                 attr = action.xpath('attributeName/text()')
                 value = action.xpath('attributeValue/text()')
-                if len(attr) and len(value):
+                if len(attr):
                     conf_item['attribute'] = attr[0]
-                    conf_item['value'] = value[0]
+                    if len(value):
+                        conf_item['value'] = value[0]
 
                     config_items.append(conf_item)
 
             for action in section.xpath('sectionAddAttribute'):
+                conf_item = {'xpath': xpath[0]}
                 attr = action.xpath('attributeName/text()')
                 value = action.xpath('attributeValue/text()')
-                if len(attr) and len(value):
+                log.debug('sectionAddAttribute attr|value: "%s|%s"' %
+                          (attr, value))
+
+                if len(attr):
                     conf_item['attribute'] = attr[0]
-                    conf_item['value'] = value[0]
+                    if len(value):
+                        conf_item['value'] = value[0]
                     conf_item['add'] = True
 
                     config_items.append(conf_item)

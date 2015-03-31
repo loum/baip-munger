@@ -93,11 +93,15 @@ class Munger(object):
             the resultant HTML document as a string
 
         """
-        log.debug('Search/replace XPath: "%s"' % xpath)
+        log.debug('Update attribute XPath: "%s"' % xpath)
 
         for tag in self.root.xpath(xpath):
             if value is None:
-                if tag.attrib.get(attribute):
+                if add:
+                    log.debug('Adding attr "%s" from tag "%s"' %
+                              (attribute, tag.tag))
+                    tag.attrib[attribute] = str()
+                elif tag.attrib.get(attribute):
                     log.debug('Removing attr "%s" from tag "%s"' %
                               (attribute, tag.tag))
                     tag.attrib.pop(attribute)

@@ -1,0 +1,56 @@
+#!/usr/bin/python
+
+import os
+import argparse
+
+import baip_munger
+
+CONF = os.path.join(os.sep, 'etc', 'baip', 'conf', 'munger.xml')
+DESCRIPTION = """BAIP Munger Tool"""
+
+
+def main():
+    """Script entry point.
+
+    """
+    parser = argparse.ArgumentParser(description=DESCRIPTION)
+    parser.add_argument('-c',
+                        '--config-file',
+                        action='store',
+                        dest='config_file')
+
+    parser.add_argument('infile',
+                        help='Source HTML file to munge')
+
+    parser.add_argument('outfile',
+                        help='Munged HTML file')
+
+    # Prepare the argument list and config.
+    args = parser.parse_args()
+
+    config_file = args.config_file
+    if args.config_file is None:
+        if os.path.exists(CONF):
+            config_file = CONF
+
+    if config_file is None:
+        sys.exit('Unable to source the BAIP munger.xml')
+
+    conf = baip_munger.XpathGen(config_file)
+    actions = conf.parse_configuration()
+
+    html_fh = open(args.infile)
+    html = html_fh.read()
+    html_fh.close()
+
+    munger = baip_munger.Munger(html)
+    for action in actions:
+        munger.update_element_attribute(**action)
+
+    out_fh = open(args.outfile, 'w')
+    out_fh.write(munger.dump_root())
+    out_fh.close()
+    # munger.dump_root()
+
+if __name__ == '__main__':
+    main()

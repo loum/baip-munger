@@ -56,7 +56,7 @@ def find_data_files(srcdir, *wildcards, **kw):
 
     return file_list
 
-find_data_files('baip_munger/conf/', '*.conf', version=VERSION)
+find_data_files('baip_munger/conf/', '*.xml', version=VERSION)
 
 setup(name='python-baip-munger',
       version=VERSION,
@@ -64,6 +64,6 @@ setup(name='python-baip-munger',
       author='Lou Markovski',
       author_email='lou.markovski@gmail.com',
       url='',
-      # scripts=['baip_munger/bin/baip-munger'],
+      scripts=['baip_munger/bin/baip-munger'],
       packages=['baip_munger'],
-      package_data={'baip_munger': ['conf/*.conf.[0-9]*.[0-9]*.[0-9]*']})
+      package_data={'baip_munger': ['conf/*.xml.[0-9]*.[0-9]*.[0-9]*']})

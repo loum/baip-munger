@@ -23,4 +23,16 @@
             <attributeValue>margin-bottom:1.0pt</attributeValue>
         </sectionAddAttribute>
 	</Section>
+	<Section>
+		<sectionDescription>Update attribute</sectionDescription>
+		<xpath>//table[@class='TableBAHeaderRow']/thead/tr/td</xpath>
+		<sectionAddAttribute>
+            <attributeName>width</attributeName>
+            <attributeValue>68</attributeValue>
+        </sectionAddAttribute>
+		<sectionAddAttribute>
+            <attributeName>nowrap</attributeName>
+            <attributeValue></attributeValue>
+        </sectionAddAttribute>
+	</Section>
 </Doc>

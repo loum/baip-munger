@@ -100,16 +100,27 @@ class TestXpathGen(unittest2.TestCase):
                 'xpath':
                     ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
                      ('TableBAHeaderRow', 'TableHeading')),
-               'attribute': 'class',
-               'value': 'TableText',
+                'attribute': 'class',
+                'value': 'TableText',
             },
             {
                 'xpath':
                     ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
                      ('TableBAHeaderRow', 'TableHeading')),
-               'attribute': 'style',
-               'value': 'margin-bottom:1.0pt',
-               'add': True,
+                'attribute': 'style',
+                'value': 'margin-bottom:1.0pt',
+                'add': True,
+            },
+            {
+                'xpath': "//table[@class='TableBAHeaderRow']/thead/tr/td",
+                'attribute': 'width',
+                'value': '68',
+                'add': True,
+            },
+            {
+                'xpath': "//table[@class='TableBAHeaderRow']/thead/tr/td",
+                'attribute': 'nowrap',
+                'add': True,
             },
         ]
         msg = 'Delete element attribute config item error'

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Section>
+		<sectionDescription>Update attribute</sectionDescription>
+		<xpath>//table[@class='TableBAHeaderRow']</xpath>
+		<sectionAddAttribute>
+            <attributeName>style</attributeName>
+            <attributeValue>width:103.14%; margin-left:2.85pt;border-collapse:collapse</attributeValue>
+        </sectionAddAttribute>
+	</Section>
+	<Section>
+		<sectionDescription>Update attribute</sectionDescription>
+		<xpath>//table[@class='TableBAHeaderRow']/thead/tr</xpath>
+		<sectionAddAttribute>
+            <attributeName>style</attributeName>
+            <attributeValue>page-break-inside:avoid</attributeValue>
+        </sectionAddAttribute>
+	</Section>
+	<Section>
+		<sectionDescription>Update attribute</sectionDescription>
+		<xpath>//table[@class='TableBAHeaderRow']/thead/tr/td</xpath>
+		<sectionAddAttribute>
+            <attributeName>width</attributeName>
+            <attributeValue>50</attributeValue>
+        </sectionAddAttribute>
+		<sectionAddAttribute>
+            <attributeName>nowrap</attributeName>
+        </sectionAddAttribute>
+		<sectionAddAttribute>
+            <attributeName>valign</attributeName>
+            <attributeValue>top</attributeValue>
+        </sectionAddAttribute>
+		<sectionAddAttribute>
+            <attributeName>style</attributeName>
+            <attributeValue>width:37.4pt; border-top:none; border-left:none; border-bottom:solid white 1.0pt; border-right:solid white 1.0pt; background:#146692; padding:2.85pt 2.85pt 1.4pt 2.85pt</attributeValue>
+        </sectionAddAttribute>
+	</Section>
+	<Section>
+		<sectionDescription>Add attribute</sectionDescription>
+		<xpath>//table[@class='TableBAHeaderRow']/tbody/tr</xpath>
+		<sectionAddAttribute>
+            <attributeName>style</attributeName>
+            <attributeValue>page-break-inside:avoid</attributeValue>
+        </sectionAddAttribute>
+	</Section>
+	<Section>
+		<sectionDescription>Add attribute</sectionDescription>
+		<xpath>//table[@class='TableBAHeaderRow']/tbody/tr/td</xpath>
+		<sectionAddAttribute>
+            <attributeName>width</attributeName>
+            <attributeValue>50</attributeValue>
+        </sectionAddAttribute>
+		<sectionAddAttribute>
+            <attributeName>nowrap</attributeName>
+        </sectionAddAttribute>
+		<sectionAddAttribute>
+            <attributeName>valign</attributeName>
+            <attributeValue>top</attributeValue>
+        </sectionAddAttribute>
+		<sectionAddAttribute>
+            <attributeName>style</attributeName>
+            <attributeValue>width:37.4pt; border-top:none; border-left:none; border-bottom:solid white 1.0pt; border-right:solid white 1.0pt; background:#E1F2FB; padding:2.85pt 2.85pt 1.4pt 2.85pt</attributeValue>
+        </sectionAddAttribute>
+	</Section>
+	<Section>
+		<sectionDescription>Update attribute</sectionDescription>
+		<xpath>//table[@class='TableBAHeaderRow']/tbody/tr/td/p</xpath>
+		<sectionAddAttribute>
+            <attributeName>class</attributeName>
+            <attributeValue>TableText</attributeValue>
+        </sectionAddAttribute>
+		<sectionAddAttribute>
+            <attributeName>style</attributeName>
+            <attributeValue>margin-bottom:1.0pt</attributeValue>
+        </sectionAddAttribute>
+	</Section>
+</Doc>
