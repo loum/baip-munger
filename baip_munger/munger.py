@@ -133,3 +133,35 @@ class Munger(object):
             new_element = lxml.etree.Element(new_tag)
             new_element.text = tag.text_content()
             tag.getparent().replace(tag, new_element)
+
+    def insert_tag(self, xpath, new_tag):
+        """Insert *new_tag* element tag from *xpath* expression search.
+
+        **Args:**
+            *xpath*: standard XPath expression used to query against *html*
+
+            *new_tag*: new element tag name to replace as a string.  Method
+            will convert to a :mod:`lxml.etree.Element`
+
+        """
+        log.info('Insert element tag XPath: "%s"' % xpath)
+
+        new_element = lxml.etree.Element(new_tag)
+
+        tags = self.root.xpath(xpath)
+        parent = None
+        index = None
+        if len(tags):
+            if parent is None:
+                parent = tags[0].getparent()
+                index = parent.index(tags[0])
+                log.debug('XPath resultant index: %d' % index)
+
+            new_element.extend(tags)
+            xml = lxml.etree.XML(lxml.etree.tostring(new_element))
+
+        for tag in tags:
+            tag.getparent().remove(tag)
+
+        if parent is not None:
+            parent.insert(index, xml)

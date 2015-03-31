@@ -261,7 +261,32 @@ class TestMunger(unittest2.TestCase):
         result_fh = open(os.path.join(self._results_dir, result_file))
         expected = result_fh.read().rstrip()
         result_fh.close()
-        msg = 'Attribute update: update attribute error'
+        msg = 'Element tag replace error'
+        self.assertEqual(received, expected, msg)
+
+    def test_insert_tag(self):
+        """Insert parent element tag.
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated_dots
+
+        # and an xpath definition to target a HTML element
+        xpath = ("//p[@class='%s']" % 'MsoListBullet')
+
+        # and a new parent tag name to insert
+        new_tag = 'ul'
+
+        # when I attempt to insert the new parent element
+        munger = baip_munger.Munger(html)
+        munger.insert_tag(xpath, new_tag)
+        received = munger.dump_root()
+
+        # the resultant HTML should present with the new parent element
+        result_file = '1134-coal-and-hydrocarbons-insert-parent-element.htm'
+        result_fh = open(os.path.join(self._results_dir, result_file))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Element tag insert error'
         self.assertEqual(received, expected, msg)
 
     @classmethod
