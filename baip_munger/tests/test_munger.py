@@ -15,6 +15,7 @@ class TestMunger(unittest2.TestCase):
         table_removed_html_page = 'source_with_table_removed.htm'
         p_removed_html_page = 'source_with_p_removed.htm'
         baip_generated = '1123-climate.htm'
+        baip_generated_dots = '1134-coal-and-hydrocarbons.htm'
 
         # Source HTML page.
         test_html_fh = open(os.path.join(test_dir, test_html_page))
@@ -24,6 +25,11 @@ class TestMunger(unittest2.TestCase):
         # Source BAIP generated.
         test_html_fh = open(os.path.join(test_dir, baip_generated))
         cls._source_baip_generated = test_html_fh.read()
+        test_html_fh.close()
+
+        # Source BAIP generated: dots.
+        test_html_fh = open(os.path.join(test_dir, baip_generated_dots))
+        cls._source_baip_generated_dots = test_html_fh.read()
         test_html_fh.close()
 
         # Source with table removed HTML page.
@@ -228,6 +234,34 @@ class TestMunger(unittest2.TestCase):
         expected = result_fh.read().rstrip()
         result_fh.close()
         msg = 'Attribute update: add attribute error'
+        self.assertEqual(received, expected, msg)
+
+    def test_replace_tag(self):
+        """Replace element tag.
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated_dots
+
+        # and an xpath definition to target a HTML element
+        xpath = ("//p[@class='%s']" % 'MsoListBullet')
+
+        # and an old tag name
+        old_tag = 'p'
+
+        # and an new tag name
+        new_tag = 'li'
+
+        # when I attempt to search and replace
+        munger = baip_munger.Munger(html)
+        munger.replace_tag(xpath, new_tag)
+        received = munger.dump_root()
+
+        # the resultant HTML should present an updated element attribute
+        result_file = '1134-coal-and-hydrocarbons-replace-tag.htm'
+        result_fh = open(os.path.join(self._results_dir, result_file))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Attribute update: update attribute error'
         self.assertEqual(received, expected, msg)
 
     @classmethod

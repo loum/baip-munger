@@ -1,5 +1,6 @@
 import lxml.html
 import lxml.etree
+import lxml.html.builder
 
 from logga.log import log
 
@@ -82,15 +83,12 @@ class Munger(object):
         **Args:**
             *xpath*: standard XPath expression used to query against *html*
 
-            *attribute*: element attribute name to remove
+            *attribute*: element attribute name to action
 
             *value*: if not ``None``, string to replace *attribute* value
 
             *add*: boolean flag which if set, will add the attribute
             if it already not part of the tag definition
-
-        **Returns:**
-            the resultant HTML document as a string
 
         """
         log.debug('Update attribute XPath: "%s"' % xpath)
@@ -116,3 +114,22 @@ class Munger(object):
                               (attribute, tag.tag, value))
 
                     tag.attrib[attribute] = value
+
+    def replace_tag(self, xpath, new_tag):
+        """Replace element tag from *xpath* expression search to
+        *new_tag*.
+
+        **Args:**
+            *xpath*: standard XPath expression used to query against *html*
+
+            *new_tag*: new element tag name to replace
+
+        """
+        log.info('Replace element tag XPath: "%s"' % xpath)
+
+        for tag in self.root.xpath(xpath):
+            log.debug('Replacing element tag "%s" with "%s"' %
+                      (tag.tag, new_tag))
+            new_element = lxml.etree.Element(new_tag)
+            new_element.text = tag.text_content()
+            tag.getparent().replace(tag, new_element)
