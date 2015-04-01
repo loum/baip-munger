@@ -44,13 +44,17 @@ def main():
     html_fh.close()
 
     munger = baip_munger.Munger(html)
-    for action in actions:
-        munger.update_element_attribute(**action)
+    for action, rules in actions.iteritems():
+        if action == 'attribute':
+            for rule in rules:
+                munger.update_element_attribute(**rule)
+        elif action == 'strip_chars':
+            for rule in rules:
+                munger.strip_char(**rule)
 
     out_fh = open(args.outfile, 'w')
     out_fh.write(munger.dump_root())
     out_fh.close()
-    # munger.dump_root()
 
 if __name__ == '__main__':
     main()

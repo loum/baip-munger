@@ -39,7 +39,7 @@
         <sectionDescription>Update attribute</sectionDescription>
         <xpath>//p[@class='MsoListBullet']</xpath>
         <sectionStripChars>
-            <stripChars>u'\xb7 '</stripChars>
+            <stripChars>&#183; </stripChars>
         </sectionStripChars>
     </Section>
 </Doc>

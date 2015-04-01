@@ -131,7 +131,7 @@ class TestXpathGen(unittest2.TestCase):
             'strip_chars': [
                 {
                     'xpath': "//p[@class='MsoListBullet']",
-                    'chars': "u'\\xb7 '"
+                    'chars': u'\xb7 '
                 }
             ]
         }
@@ -249,7 +249,7 @@ class TestXpathGen(unittest2.TestCase):
         expected = [
             {
                 'xpath': "//p[@class='MsoListBullet']",
-                'chars': "u'\\xb7 '",
+                'chars': u'\xb7 ',
             }
         ]
         msg = 'Strip chars config items error'
