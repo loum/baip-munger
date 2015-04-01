@@ -51,6 +51,9 @@ def main():
         elif action == 'strip_chars':
             for rule in rules:
                 munger.strip_char(**rule)
+        elif action == 'replace_tags':
+            for rule in rules:
+                munger.replace_tag(**rule)
 
     out_fh = open(args.outfile, 'w')
     out_fh.write(munger.dump_root())

@@ -36,10 +36,17 @@
         </sectionAddAttribute>
     </Section>
     <Section>
-        <sectionDescription>Update attribute</sectionDescription>
+        <sectionDescription>Strip characters</sectionDescription>
         <xpath>//p[@class='MsoListBullet']</xpath>
         <sectionStripChars>
             <stripChars>&#183; </stripChars>
         </sectionStripChars>
+    </Section>
+    <Section>
+        <sectionDescription>Replace tag</sectionDescription>
+        <xpath>//p[@class='MsoListBullet']</xpath>
+        <sectionReplaceTag>
+            <newTag>li</newTag>
+        </sectionReplaceTag>
     </Section>
 </Doc>

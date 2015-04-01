@@ -76,8 +76,8 @@ class TestXpathGen(unittest2.TestCase):
         msg = 'Section remove XPath expressions list error'
         self.assertListEqual(received, expected, msg)
 
-    def test_update_element_attributes_configuration(self):
-        """Update element attribute configuration.
+    def test_parse_configuration(self):
+        """Parse configuration.
         """
         # Given a Munger configuration file with target xpath expression
         conf_file = os.path.join(self._conf_dir,
@@ -133,7 +133,13 @@ class TestXpathGen(unittest2.TestCase):
                     'xpath': "//p[@class='MsoListBullet']",
                     'chars': u'\xb7 '
                 }
-            ]
+            ],
+            'replace_tags': [
+                {
+                    'xpath': "//p[@class='MsoListBullet']",
+                    'new_tag': 'li'
+                }
+            ],
         }
         msg = 'Delete element attribute config item error'
         self.assertDictEqual(received, expected, msg)
@@ -253,6 +259,33 @@ class TestXpathGen(unittest2.TestCase):
             }
         ]
         msg = 'Strip chars config items error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_parse_replace_tag(self):
+        """Parse replace tag config items.
+        """
+        # Given a Munger configuration file with target xpath expression
+        conf_file = os.path.join(self._conf_dir,
+                                 'baip-munger-update-attr.xml')
+        xpathgen = baip_munger.XpathGen(conf_file)
+        xpath = "//p[@class='MsoListBullet']"
+        section = xpathgen.root.xpath('//Doc/Section')
+
+        # when I parse a sectionStripChars configuration element
+        # section[5] is the "sectionReplaceTag" element
+        received = xpathgen._parse_replace_tag(xpath, section[5])
+
+        # then I should receive a list of dictionary structures of the
+        # form
+        # [{'xpath': '<xpath_expr>',
+        #   'new_tag': '<new_tag>'}]
+        expected = [
+            {
+                'xpath': "//p[@class='MsoListBullet']",
+                'new_tag': 'li',
+            }
+        ]
+        msg = 'Replace tag config items error'
         self.assertListEqual(received, expected, msg)
 
     @classmethod

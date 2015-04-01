@@ -111,7 +111,8 @@ class XpathGen(object):
 
         """
         config_items = {'attributes': [],
-                        'strip_chars': []}
+                        'strip_chars': [],
+                        'replace_tags': []}
 
         for section in self.root.xpath('//Doc/Section'):
             xpath = section.xpath('xpath/text()')
@@ -130,6 +131,9 @@ class XpathGen(object):
 
             chars = self._parse_strip_chars(xpath[0], section)
             config_items.get('strip_chars').extend(chars)
+
+            new_tags = self._parse_replace_tag(xpath[0], section)
+            config_items.get('replace_tags').extend(new_tags)
 
         return config_items
 
@@ -204,6 +208,24 @@ class XpathGen(object):
 
             if len(chars):
                 conf_item['chars'] = chars[0]
+
+                config_items.append(conf_item)
+
+        return config_items
+
+    def _parse_replace_tag(self, xpath, section):
+        """Parse ``sectionReplaceTag`` config items.
+
+        """
+        config_items = []
+
+        for action in section.xpath('sectionReplaceTag'):
+            conf_item = {'xpath': xpath}
+            new_tag = action.xpath('newTag/text()')
+            log.debug('sectionReplaceTag value: "%s"' % new_tag)
+
+            if len(new_tag):
+                conf_item['new_tag'] = new_tag[0]
 
                 config_items.append(conf_item)
 
