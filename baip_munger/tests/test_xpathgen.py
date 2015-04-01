@@ -140,8 +140,14 @@ class TestXpathGen(unittest2.TestCase):
                     'new_tag': 'li'
                 }
             ],
+            'insert_tags': [
+                {
+                    'xpath': "//div/li",
+                    'new_tag': 'ul'
+                }
+            ],
         }
-        msg = 'Delete element attribute config item error'
+        msg = 'Config item error'
         self.assertDictEqual(received, expected, msg)
 
     def test_parse_delete_attributes(self):
@@ -271,7 +277,7 @@ class TestXpathGen(unittest2.TestCase):
         xpath = "//p[@class='MsoListBullet']"
         section = xpathgen.root.xpath('//Doc/Section')
 
-        # when I parse a sectionStripChars configuration element
+        # when I parse a sectionReplaceTag configuration element
         # section[5] is the "sectionReplaceTag" element
         received = xpathgen._parse_replace_tag(xpath, section[5])
 
@@ -286,6 +292,33 @@ class TestXpathGen(unittest2.TestCase):
             }
         ]
         msg = 'Replace tag config items error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_parse_insert_tag(self):
+        """Parse insert tag config items.
+        """
+        # Given a Munger configuration file with target xpath expression
+        conf_file = os.path.join(self._conf_dir,
+                                 'baip-munger-update-attr.xml')
+        xpathgen = baip_munger.XpathGen(conf_file)
+        xpath = "//p[@class='MsoListBullet']"
+        section = xpathgen.root.xpath('//Doc/Section')
+
+        # when I parse a sectionInsertTag configuration element
+        # section[6] is the "sectionInsertTag" element
+        received = xpathgen._parse_insert_tag(xpath, section[6])
+
+        # then I should receive a list of dictionary structures of the
+        # form
+        # [{'xpath': '<xpath_expr>',
+        #   'new_tag': '<new_tag>'}]
+        expected = [
+            {
+                'xpath': "//p[@class='MsoListBullet']",
+                'new_tag': 'ul',
+            }
+        ]
+        msg = 'Insert tag config items error'
         self.assertListEqual(received, expected, msg)
 
     @classmethod

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    WARNING!
+
+    Do not change the ordering of the Sections as they are used
+    by the test harness.  If you want to add Sections then append
+    them the end of the configuration.
+-->
 <Doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <Section>
         <sectionDescription>Delete attribute</sectionDescription>
@@ -48,5 +55,12 @@
         <sectionReplaceTag>
             <newTag>li</newTag>
         </sectionReplaceTag>
+    </Section>
+    <Section>
+        <sectionDescription>Replace tag</sectionDescription>
+        <xpath>//div/li</xpath>
+        <sectionInsertTag>
+            <newTag>ul</newTag>
+        </sectionInsertTag>
     </Section>
 </Doc>

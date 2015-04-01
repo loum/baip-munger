@@ -54,6 +54,9 @@ def main():
         elif action == 'replace_tags':
             for rule in rules:
                 munger.replace_tag(**rule)
+        elif action == 'insert_tags':
+            for rule in rules:
+                munger.insert_tag(**rule)
 
     out_fh = open(args.outfile, 'w')
     out_fh.write(munger.dump_root())

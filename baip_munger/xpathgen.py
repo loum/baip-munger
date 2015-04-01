@@ -112,7 +112,8 @@ class XpathGen(object):
         """
         config_items = {'attributes': [],
                         'strip_chars': [],
-                        'replace_tags': []}
+                        'replace_tags': [],
+                        'insert_tags': []}
 
         for section in self.root.xpath('//Doc/Section'):
             xpath = section.xpath('xpath/text()')
@@ -132,8 +133,11 @@ class XpathGen(object):
             chars = self._parse_strip_chars(xpath[0], section)
             config_items.get('strip_chars').extend(chars)
 
-            new_tags = self._parse_replace_tag(xpath[0], section)
-            config_items.get('replace_tags').extend(new_tags)
+            replace_tags = self._parse_replace_tag(xpath[0], section)
+            config_items.get('replace_tags').extend(replace_tags)
+
+            insert_tags = self._parse_insert_tag(xpath[0], section)
+            config_items.get('insert_tags').extend(insert_tags)
 
         return config_items
 
@@ -223,6 +227,24 @@ class XpathGen(object):
             conf_item = {'xpath': xpath}
             new_tag = action.xpath('newTag/text()')
             log.debug('sectionReplaceTag value: "%s"' % new_tag)
+
+            if len(new_tag):
+                conf_item['new_tag'] = new_tag[0]
+
+                config_items.append(conf_item)
+
+        return config_items
+
+    def _parse_insert_tag(self, xpath, section):
+        """Parse ``sectionInsertTag`` config items.
+
+        """
+        config_items = []
+
+        for action in section.xpath('sectionInsertTag'):
+            conf_item = {'xpath': xpath}
+            new_tag = action.xpath('newTag/text()')
+            log.debug('sectionInsertTag value: "%s"' % new_tag)
 
             if len(new_tag):
                 conf_item['new_tag'] = new_tag[0]
