@@ -110,7 +110,8 @@ class XpathGen(object):
                 ]
 
         """
-        config_items = []
+        config_items = {'attributes': [],
+                        'strip_chars': []}
 
         for section in self.root.xpath('//Doc/Section'):
             xpath = section.xpath('xpath/text()')
@@ -118,38 +119,92 @@ class XpathGen(object):
             if not len(xpath):
                 continue
 
-            for action in section.xpath('sectionDeleteAttribute'):
-                conf_item = {'xpath': xpath[0]}
-                attr = action.xpath('attributeName/text()')
-                if len(attr):
-                    conf_item['attribute'] = attr[0]
+            delete_attrs = self._parse_delete_attributes(xpath[0], section)
+            config_items.get('attributes').extend(delete_attrs)
 
-                    config_items.append(conf_item)
+            update_attrs = self._parse_update_attributes(xpath[0], section)
+            config_items.get('attributes').extend(update_attrs)
 
-            for action in section.xpath('sectionUpdateAttribute'):
-                conf_item = {'xpath': xpath[0]}
-                attr = action.xpath('attributeName/text()')
-                value = action.xpath('attributeValue/text()')
-                if len(attr):
-                    conf_item['attribute'] = attr[0]
-                    if len(value):
-                        conf_item['value'] = value[0]
+            add_attrs = self._parse_add_attributes(xpath[0], section)
+            config_items.get('attributes').extend(add_attrs)
 
-                    config_items.append(conf_item)
+            chars = self._parse_strip_chars(xpath[0], section)
+            config_items.get('strip_chars').extend(chars)
 
-            for action in section.xpath('sectionAddAttribute'):
-                conf_item = {'xpath': xpath[0]}
-                attr = action.xpath('attributeName/text()')
-                value = action.xpath('attributeValue/text()')
-                log.debug('sectionAddAttribute attr|value: "%s|%s"' %
-                          (attr, value))
+        return config_items
 
-                if len(attr):
-                    conf_item['attribute'] = attr[0]
-                    if len(value):
-                        conf_item['value'] = value[0]
-                    conf_item['add'] = True
+    def _parse_delete_attributes(self, xpath, section):
+        """Parse ``sectionDeleteAttribute`` element configuration items
 
-                    config_items.append(conf_item)
+        """
+        config_items = []
+
+        for action in section.xpath('sectionDeleteAttribute'):
+            conf_item = {'xpath': xpath}
+            attr = action.xpath('attributeName/text()')
+            if len(attr):
+                conf_item['attribute'] = attr[0]
+
+                config_items.append(conf_item)
+
+        return config_items
+
+    def _parse_update_attributes(self, xpath, section):
+        """Parse ``sectionUpdateAttribute`` config items.
+
+        """
+        config_items = []
+
+        for action in section.xpath('sectionUpdateAttribute'):
+            conf_item = {'xpath': xpath}
+            attr = action.xpath('attributeName/text()')
+            value = action.xpath('attributeValue/text()')
+            if len(attr):
+                conf_item['attribute'] = attr[0]
+                if len(value):
+                    conf_item['value'] = value[0]
+
+                config_items.append(conf_item)
+
+        return config_items
+
+    def _parse_add_attributes(self, xpath, section):
+        """Parse ``sectionAddAttribute`` config items.
+
+        """
+        config_items = []
+
+        for action in section.xpath('sectionAddAttribute'):
+            conf_item = {'xpath': xpath}
+            attr = action.xpath('attributeName/text()')
+            value = action.xpath('attributeValue/text()')
+            log.debug('sectionAddAttribute attr|value: "%s|%s"' %
+                      (attr, value))
+
+            if len(attr):
+                conf_item['attribute'] = attr[0]
+                if len(value):
+                    conf_item['value'] = value[0]
+                conf_item['add'] = True
+
+                config_items.append(conf_item)
+
+        return config_items
+
+    def _parse_strip_chars(self, xpath, section):
+        """Parse ``sectionStripChars`` config items.
+
+        """
+        config_items = []
+
+        for action in section.xpath('sectionStripChars'):
+            conf_item = {'xpath': xpath}
+            chars = action.xpath('stripChars/text()')
+            log.debug('sectionStripChars value: "%s"' % chars)
+
+            if len(chars):
+                conf_item['chars'] = chars[0]
+
+                config_items.append(conf_item)
 
         return config_items

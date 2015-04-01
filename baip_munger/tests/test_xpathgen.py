@@ -9,6 +9,7 @@ class TestXpathGen(unittest2.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.maxDiff = None
         cls._conf_dir = os.path.join('baip_munger', 'tests', 'files')
         conf_file = 'baip-munger.xml'
         cls._conf_path = os.path.join(cls._conf_dir, conf_file)
@@ -91,18 +92,130 @@ class TestXpathGen(unittest2.TestCase):
         # [{'xpath': '<xpath_expr>',
         #   'attribute': '<attr_name>'},
         #  {...}]
+        expected = {
+            'attributes': [
+                {
+                    'xpath':
+                        "//table[@class='TableBAHeaderRow']/thead/tr/td/p",
+                    'attribute': 'class',
+                },
+                {
+                    'xpath':
+                        ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
+                         ('TableBAHeaderRow', 'TableHeading')),
+                    'attribute': 'class',
+                    'value': 'TableText',
+                },
+                {
+                    'xpath':
+                        ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
+                         ('TableBAHeaderRow', 'TableHeading')),
+                    'attribute': 'style',
+                    'value': 'margin-bottom:1.0pt',
+                    'add': True,
+                },
+                {
+                    'xpath':
+                        "//table[@class='TableBAHeaderRow']/thead/tr/td",
+                    'attribute': 'width',
+                    'value': '68',
+                    'add': True,
+                },
+                {
+                    'xpath':
+                        "//table[@class='TableBAHeaderRow']/thead/tr/td",
+                    'attribute': 'nowrap',
+                    'add': True,
+                },
+            ],
+            'strip_chars': [
+                {
+                    'xpath': "//p[@class='MsoListBullet']",
+                    'chars': "u'\\xb7 '"
+                }
+            ]
+        }
+        msg = 'Delete element attribute config item error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_parse_delete_attributes(self):
+        """Parse delete attributes config items.
+        """
+        # Given a Munger configuration file with target xpath expression
+        conf_file = os.path.join(self._conf_dir,
+                                 'baip-munger-update-attr.xml')
+        xpathgen = baip_munger.XpathGen(conf_file)
+        xpath = "//table[@class='TableBAHeaderRow']/thead/tr/td/p"
+        section = xpathgen.root.xpath('//Doc/Section')
+
+        # when I parse a sectionDeleteAttribute configuration element
+        # section[0] is the "sectionDeleteAttribute" element
+        received = xpathgen._parse_delete_attributes(xpath, section[0])
+
+        # then I should receive a list of dictionary structures of the
+        # form
+        # [{'xpath': '<xpath_expr>',
+        #   'attribute': '<attr_name>'}]
         expected = [
             {
                 'xpath': "//table[@class='TableBAHeaderRow']/thead/tr/td/p",
                 'attribute': 'class',
             },
+        ]
+        msg = 'Delete attribute config items error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_parse_update_attributes(self):
+        """Parse update attributes config items.
+        """
+        # Given a Munger configuration file with target xpath expression
+        conf_file = os.path.join(self._conf_dir,
+                                 'baip-munger-update-attr.xml')
+        xpathgen = baip_munger.XpathGen(conf_file)
+        xpath = ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
+                 ('TableBAHeaderRow', 'TableHeading'))
+        section = xpathgen.root.xpath('//Doc/Section')
+
+        # when I parse a sectionDeleteAttribute configuration element
+        # section[1] is the "sectionUpdateAttribute" element
+        received = xpathgen._parse_update_attributes(xpath, section[1])
+
+        # then I should receive a list of dictionary structures of the
+        # form
+        # [{'xpath': '<xpath_expr>',
+        #   'attribute': '<attr_name>'}]
+        expected = [
             {
                 'xpath':
                     ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
                      ('TableBAHeaderRow', 'TableHeading')),
                 'attribute': 'class',
                 'value': 'TableText',
-            },
+            }
+        ]
+        msg = 'Update attribute config items error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_parse_add_attributes(self):
+        """Parse add attributes config items.
+        """
+        # Given a Munger configuration file with target xpath expression
+        conf_file = os.path.join(self._conf_dir,
+                                 'baip-munger-update-attr.xml')
+        xpathgen = baip_munger.XpathGen(conf_file)
+        xpath = ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
+                 ('TableBAHeaderRow', 'TableHeading'))
+        section = xpathgen.root.xpath('//Doc/Section')
+
+        # when I parse a sectionDeleteAttribute configuration element
+        # section[2] is the "sectionAddAttribute" element
+        received = xpathgen._parse_add_attributes(xpath, section[2])
+
+        # then I should receive a list of dictionary structures of the
+        # form
+        # [{'xpath': '<xpath_expr>',
+        #   'attribute': '<attr_name>'}]
+        expected = [
             {
                 'xpath':
                     ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
@@ -110,20 +223,36 @@ class TestXpathGen(unittest2.TestCase):
                 'attribute': 'style',
                 'value': 'margin-bottom:1.0pt',
                 'add': True,
-            },
-            {
-                'xpath': "//table[@class='TableBAHeaderRow']/thead/tr/td",
-                'attribute': 'width',
-                'value': '68',
-                'add': True,
-            },
-            {
-                'xpath': "//table[@class='TableBAHeaderRow']/thead/tr/td",
-                'attribute': 'nowrap',
-                'add': True,
-            },
+            }
         ]
-        msg = 'Delete element attribute config item error'
+        msg = 'Add attribute config items error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_parse_strip_chars(self):
+        """Parse strip characters config items.
+        """
+        # Given a Munger configuration file with target xpath expression
+        conf_file = os.path.join(self._conf_dir,
+                                 'baip-munger-update-attr.xml')
+        xpathgen = baip_munger.XpathGen(conf_file)
+        xpath = "//p[@class='MsoListBullet']"
+        section = xpathgen.root.xpath('//Doc/Section')
+
+        # when I parse a sectionStripChars configuration element
+        # section[4] is the "sectionStripChars" element
+        received = xpathgen._parse_strip_chars(xpath, section[4])
+
+        # then I should receive a list of dictionary structures of the
+        # form
+        # [{'xpath': '<xpath_expr>',
+        #   'chars': '<chars>'}]
+        expected = [
+            {
+                'xpath': "//p[@class='MsoListBullet']",
+                'chars': "u'\\xb7 '",
+            }
+        ]
+        msg = 'Strip chars config items error'
         self.assertListEqual(received, expected, msg)
 
     @classmethod
