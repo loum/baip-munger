@@ -165,3 +165,28 @@ class Munger(object):
 
         if parent is not None:
             parent.insert(index, xml)
+
+    def strip_char(self, xpath, chars):
+        """Strip *chars* from *xpath* expression search.
+
+        **Args:**
+            *xpath*: standard XPath expression used to query against *html*
+
+            *chars*: characters to strip from the element tag text
+
+        """
+        log.info('Strip chars XPath expression: "%s"' % xpath)
+
+        for tag in self.root.xpath(xpath):
+            for child_tag in tag.iter():
+                if child_tag.text is not None:
+                    log.debug('Stipping "%s" from tag "%s" text: "%s"' %
+                              (chars, child_tag.tag, child_tag.text))
+                    child_tag.text = child_tag.text.strip(chars)
+                    log.debug('Resultant text: "%s"' % child_tag.text)
+                    if child_tag.tail is not None:
+                        log.debug('Stipping tail text: "%s" from "%s"' %
+                                  (chars, child_tag.tail))
+                        child_tag.tail = child_tag.tail.strip(chars)
+                        log.debug('Resultant tail text: "%s"' %
+                                  child_tag.tail)

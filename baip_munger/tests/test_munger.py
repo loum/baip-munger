@@ -245,9 +245,6 @@ class TestMunger(unittest2.TestCase):
         # and an xpath definition to target a HTML element
         xpath = ("//p[@class='%s']" % 'MsoListBullet')
 
-        # and an old tag name
-        old_tag = 'p'
-
         # and an new tag name
         new_tag = 'li'
 
@@ -288,6 +285,32 @@ class TestMunger(unittest2.TestCase):
         result_fh.close()
         msg = 'Element tag insert error'
         self.assertEqual(received, expected, msg)
+
+    def test_strip_char(self):
+        """Strip text from element tag text.
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated_dots
+
+        # and an xpath definition to target a HTML element
+        xpath = ("//p[@class='%s']" % 'MsoListBullet')
+
+        # and a sub string to remove from the element tag
+        text = u'\xb7 '
+
+        # when I attempt to strip the text
+        munger = baip_munger.Munger(html)
+        munger.strip_char(xpath, text)
+        received = munger.dump_root()
+
+        # the resultant HTML should present with modified tag text
+        result_file = '1134-coal-and-hydrocarbons-strip-text.htm'
+        result_fh = open(os.path.join(self._results_dir, result_file))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Element tag text strip error'
+        self.assertEqual(received, expected, msg)
+
 
     @classmethod
     def tearDownClass(cls):
