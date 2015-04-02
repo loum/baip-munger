@@ -2,9 +2,6 @@
 
 .. _contents:
 
-Contents
---------
-
 .. toctree::
    :maxdepth: 4
 
