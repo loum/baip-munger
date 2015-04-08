@@ -311,7 +311,6 @@ class TestMunger(unittest2.TestCase):
         msg = 'Element tag text strip error'
         self.assertEqual(received, expected, msg)
 
-
     @classmethod
     def tearDownClass(cls):
         cls._source_html = None

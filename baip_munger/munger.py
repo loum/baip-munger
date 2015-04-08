@@ -8,25 +8,26 @@ __all__ = ['Munger']
 
 
 class Munger(object):
-    _root = None
-
-    def __init__(self, html=None):
-        if html is not None:
-            self.root = html
-
     @property
     def root(self):
-        return self._root
+        return self.__root
 
     @root.setter
     def root(self, value):
-        self._root = lxml.html.fromstring(value)
+        if value is not None:
+            self.__root = lxml.html.fromstring(value)
+
+    def __init__(self, html=None):
+        self.__root = None
+
+        if html is not None:
+            self.root = html
 
     def dump_root(self):
         root = str()
 
         if self.root is not None:
-            root = lxml.html.tostring(self._root)
+            root = lxml.html.tostring(self.__root)
 
         return root
 

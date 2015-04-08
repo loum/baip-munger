@@ -7,29 +7,29 @@ __all__ = ['XpathGen']
 
 
 class XpathGen(object):
-    _conf_file = None
-    _root = None
-
     def __init__(self, conf_file=None):
+        self.__conf_file = conf_file
+        self.__root = None
+
         if conf_file is not None:
-            self._conf_file = conf_file
             self.root = conf_file
 
     @property
     def conf_file(self):
-        return self._conf_file
+        return self.__conf_file
 
     @conf_file.setter
     def conf_file(self, value):
-        self._conf_file = value
+        self.__conf_file = value
 
     @property
     def root(self):
-        return self._root
+        return self.__root
 
     @root.setter
     def root(self, value):
-        self._root = lxml.etree.parse(value)
+        if value is not None:
+            self.__root = lxml.etree.parse(value)
 
     def extract_xpath(self, conf_file=None):
         """Wrapper method around the XPath generation facility.
@@ -141,7 +141,8 @@ class XpathGen(object):
 
         return config_items
 
-    def _parse_delete_attributes(self, xpath, section):
+    @staticmethod
+    def _parse_delete_attributes(xpath, section):
         """Parse ``sectionDeleteAttribute`` element configuration items
 
         """
@@ -157,7 +158,8 @@ class XpathGen(object):
 
         return config_items
 
-    def _parse_update_attributes(self, xpath, section):
+    @staticmethod
+    def _parse_update_attributes(xpath, section):
         """Parse ``sectionUpdateAttribute`` config items.
 
         """
@@ -176,7 +178,8 @@ class XpathGen(object):
 
         return config_items
 
-    def _parse_add_attributes(self, xpath, section):
+    @staticmethod
+    def _parse_add_attributes(xpath, section):
         """Parse ``sectionAddAttribute`` config items.
 
         """
@@ -199,7 +202,8 @@ class XpathGen(object):
 
         return config_items
 
-    def _parse_strip_chars(self, xpath, section):
+    @staticmethod
+    def _parse_strip_chars(xpath, section):
         """Parse ``sectionStripChars`` config items.
 
         """
@@ -217,7 +221,8 @@ class XpathGen(object):
 
         return config_items
 
-    def _parse_replace_tag(self, xpath, section):
+    @staticmethod
+    def _parse_replace_tag(xpath, section):
         """Parse ``sectionReplaceTag`` config items.
 
         """
@@ -235,7 +240,8 @@ class XpathGen(object):
 
         return config_items
 
-    def _parse_insert_tag(self, xpath, section):
+    @staticmethod
+    def _parse_insert_tag(xpath, section):
         """Parse ``sectionInsertTag`` config items.
 
         """
