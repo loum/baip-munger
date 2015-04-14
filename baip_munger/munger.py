@@ -138,34 +138,91 @@ class Munger(object):
     def insert_tag(self, xpath, new_tag):
         """Insert *new_tag* element tag from *xpath* expression search.
 
-        **Args:**
-            *xpath*: standard XPath expression used to query against *html*
+        Workflow is:
 
-            *new_tag*: new element tag name to replace as a string.  Method
-            will convert to a :mod:`lxml.etree.Element`
+            * identify elements from XPath expression
+            * group same parent/sequential elements
+            * construct new HTML element based on *new_tag*
+            * insert into :att:`root` :mod:`lxml.html` tree
+
+        **Args:**
+            *xpath*: standard XPath expression used to query against
+            *html*
+
+            *new_tag*: new element tag name to replace as a string.
+            Method will convert to a :mod:`lxml.etree.Element`
 
         """
-        log.info('Insert element tag XPath: "%s"' % xpath)
-
-        new_element = lxml.etree.Element(new_tag)
-
-        tags = self.root.xpath(xpath)
-        parent = None
-        index = None
-        if len(tags):
-            if parent is None:
-                parent = tags[0].getparent()
-                index = parent.index(tags[0])
-                log.debug('XPath resultant index: %d' % index)
-
-            new_element.extend(tags)
+        def build_xml(new_tag, tags_to_extend):
+            new_element = lxml.etree.Element(new_tag)
+            new_element.extend(tags_to_extend)
             xml = lxml.etree.XML(lxml.etree.tostring(new_element))
 
-        for tag in tags:
-            tag.getparent().remove(tag)
+            return xml
 
-        if parent is not None:
-            parent.insert(index, xml)
+        def child_xml_insert(start_index, node_count, parent_element, xml):
+            insert_index = start_index - node_count + 1
+            log.info('Child element insert "%s ..." at index: %d' %
+                     (lxml.html.tostring(xml)[:70], insert_index))
+            parent_element.insert(insert_index, xml)
+
+        log.info('Insert element tag XPath: "%s"' % xpath)
+
+        tags = self.root.xpath(xpath)
+        current_parent = None
+        prev_index = None
+        tags_to_extend = []
+        tags_to_extend_index = []
+
+        for tag in tags:
+            parent = tag.getparent()
+            index = parent.index(tag)
+
+            if current_parent is None:
+                current_parent = parent
+                log.debug('Set current parent %s:"%s"' %
+                          (current_parent, current_parent.tag))
+                tags_to_extend.append(tag)
+                tags_to_extend_index.append(index)
+                continue
+
+            if parent == current_parent:
+                if prev_index is None or index == (prev_index + 1):
+                    prev_index = index
+                    tags_to_extend.append(tag)
+                    tags_to_extend_index.append(index)
+                    continue
+                else:
+                    log.debug('Sequential index interrupted: inserting')
+            else:
+                log.debug('Parent change: inserting')
+
+            xml = build_xml(new_tag, tags_to_extend)
+            if parent != current_parent:
+                current_parent.insert(index, xml)
+                current_parent = parent
+                log.debug('Set current parent %s:"%s"' %
+                          (current_parent, current_parent.tag))
+            else:
+                child_xml_insert(prev_index,
+                                 len(tags_to_extend),
+                                 current_parent,
+                                 xml)
+
+            # Reset our control variables.
+            prev_index = None
+            del tags_to_extend[:]
+            tags_to_extend.append(tag)
+            del tags_to_extend_index[:]
+            tags_to_extend_index.append(index)
+
+        # Insert the laggards (if any).
+        if len(tags_to_extend_index):
+            xml = build_xml(new_tag, tags_to_extend)
+            child_xml_insert(prev_index,
+                             len(tags_to_extend),
+                             current_parent,
+                             xml)
 
     def strip_char(self, xpath, chars):
         """Strip *chars* from *xpath* expression search.
