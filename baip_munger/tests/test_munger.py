@@ -174,17 +174,52 @@ class TestMunger(unittest2.TestCase):
         # and an attribute value to replace
         value = 'TableText'
 
+        # and an old attribute value to match
+        old_value = 'TableHeading'
+
         # when I attempt to search and replace
         munger = baip_munger.Munger(html)
-        munger.update_element_attribute(xpath, attr, value)
+        munger.update_element_attribute(xpath, attr, value, old_value)
         received = munger.dump_root()
 
-        # the resultant HTML should present an omitted element attribute
+        # the resultant HTML should present an updated element attribute
         result_fh = open(os.path.join(self._results_dir,
                                       '1123-climate-update-attr.htm'))
         expected = result_fh.read().rstrip()
         result_fh.close()
         msg = 'Attribute update: update attribute error'
+        self.assertEqual(received, expected, msg)
+
+    def test_update_element_attribute_recursive_update_context(self):
+        """Update element attribute: recursive update.
+        """
+        # Given a source HTML page
+        html = self._source_grouped_dots
+
+        # and an xpath definition to target a HTML element
+        xpath = ("//p[@class='%s']/span[@style='%s']" %
+                 ('MsoBodyText', 'font-family:Symbol'))
+
+        # and an attribute name to update
+        attr = 'class'
+
+        # and an attribute value to replace
+        value = 'MsoListBullet'
+
+        # and an attribute old attribute value to match and replace
+        old_value = 'MsoBodyText'
+
+        # when I attempt to search and replace
+        munger = baip_munger.Munger(html)
+        munger.update_element_attribute(xpath, attr, value, old_value)
+        received = munger.dump_root()
+
+        # the resultant HTML should present an updated element attribute
+        result_file = 'BA-NSB-GLO-1.1-combined_clean_recursuve_attr_upd.html'
+        result_fh = open(os.path.join(self._results_dir, result_file))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Attribute update: recursive update attribute error'
         self.assertEqual(received, expected, msg)
 
     def test_update_element_attribute_update_context_old_value_matched(self):

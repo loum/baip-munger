@@ -106,6 +106,18 @@ class Munger(object):
             else:
                 element.attrib[attribute] = value
 
+        def recursive_update_attr(element, attribute, value, old_value):
+            if element.attrib.get(attribute) is not None:
+                update_attr(element, attribute, value, old_value)
+
+            # Now, perform the check recursively for each parent.
+            parent = element.getparent()
+            while parent is not None:
+                if parent.attrib.get(attribute) is not None:
+                    update_attr(parent, attribute, value, old_value)
+
+                parent = parent.getparent()
+
         log.debug('Update attribute XPath: "%s"' % xpath)
 
         for tag in self.root.xpath(xpath):
@@ -119,13 +131,17 @@ class Munger(object):
                               (attribute, tag.tag))
                     tag.attrib.pop(attribute)
             else:
-                if tag.attrib.get(attribute) is not None:
-                    update_attr(tag, attribute, value, old_value)
-                elif add:
+                if add:
                     log.debug('Adding attr "%s" from tag "%s" with "%s"' %
                               (attribute, tag.tag, value))
 
                     tag.attrib[attribute] = value
+                # else tag.attrib.get(attribute) is not None:
+                else:
+                    recursive_update_attr(tag,
+                                          attribute,
+                                          value,
+                                          old_value)
 
     def replace_tag(self, xpath, new_tag):
         """Replace element tag from *xpath* expression search to
