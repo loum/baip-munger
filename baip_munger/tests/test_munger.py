@@ -187,6 +187,67 @@ class TestMunger(unittest2.TestCase):
         msg = 'Attribute update: update attribute error'
         self.assertEqual(received, expected, msg)
 
+    def test_update_element_attribute_update_context_old_value_matched(self):
+        """Update element attribute: update a matched old value.
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated
+
+        # and an xpath definition to target a HTML element
+        xpath = ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
+                 ('TableBAHeaderRow', 'TableHeading'))
+
+        # and an attribute name to update
+        attr = 'class'
+
+        # and an old attribute value to target
+        old_value = 'TableHeading'
+
+        # and an attribute value to replace
+        value = 'TableText'
+
+        # when I attempt to search and replace
+        munger = baip_munger.Munger(html)
+        munger.update_element_attribute(xpath, attr, value, old_value)
+        received = munger.dump_root()
+
+        # the resultant HTML should present an omitted element attribute
+        result_fh = open(os.path.join(self._results_dir,
+                                      '1123-climate-update-attr.htm'))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Attribute matched old value update: update attribute error'
+        self.assertEqual(received, expected, msg)
+
+    def test_update_element_attribute_update_context_old_value_unmatched(self):
+        """Update element attribute: update a unmatched old value.
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated
+
+        # and an xpath definition to target a HTML element
+        xpath = ("//table[@class='%s']/thead/tr/td/p[@class='%s']" %
+                 ('TableBAHeaderRow', 'TableHeading'))
+
+        # and an attribute name to update
+        attr = 'class'
+
+        # and an old attribute value to target
+        old_value = 'banana'
+
+        # and an attribute value to replace
+        value = 'TableText'
+
+        # when I attempt to search and replace
+        munger = baip_munger.Munger(html)
+        munger.update_element_attribute(xpath, attr, value, old_value)
+        received = munger.dump_root()
+
+        # the resultant HTML should present an unchanged attribute
+        expected = self._source_baip_generated
+        msg = 'Attribute unmatched old value update: update attribute error'
+        self.assertEqual(received, expected, msg)
+
     def test_update_element_attribute_update_context_no_add_if_missing(self):
         """Update element attribute: update no add if missing.
         """

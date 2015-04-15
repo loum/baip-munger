@@ -71,6 +71,7 @@ class Munger(object):
                                  xpath,
                                  attribute,
                                  value=None,
+                                 old_value=None,
                                  add=False):
         """Update element *attribute* from *xpath* expression search.
 
@@ -88,10 +89,23 @@ class Munger(object):
 
             *value*: if not ``None``, string to replace *attribute* value
 
+            *old_value*: if not ``None``, old string to match *attribute*
+            value against before a replacement occurs
+
             *add*: boolean flag which if set, will add the attribute
             if it already not part of the tag definition
 
         """
+        def update_attr(element, attribute, value, old_value):
+            log.debug('Updating attr "%s" from tag "%s" with "%s"' %
+                      (attribute, element.tag, value))
+
+            if old_value is not None:
+                if element.attrib[attribute] == old_value:
+                    element.attrib[attribute] = value
+            else:
+                element.attrib[attribute] = value
+
         log.debug('Update attribute XPath: "%s"' % xpath)
 
         for tag in self.root.xpath(xpath):
@@ -106,10 +120,7 @@ class Munger(object):
                     tag.attrib.pop(attribute)
             else:
                 if tag.attrib.get(attribute) is not None:
-                    log.debug('Updating attr "%s" from tag "%s" with "%s"' %
-                              (attribute, tag.tag, value))
-
-                    tag.attrib[attribute] = value
+                    update_attr(tag, attribute, value, old_value)
                 elif add:
                     log.debug('Adding attr "%s" from tag "%s" with "%s"' %
                               (attribute, tag.tag, value))
