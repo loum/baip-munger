@@ -45,7 +45,7 @@ def main():
 
     munger = baip_munger.Munger(html)
     for action, rules in actions.iteritems():
-        if action == 'attribute':
+        if action == 'attributes':
             for rule in rules:
                 munger.update_element_attribute(**rule)
         elif action == 'strip_chars':

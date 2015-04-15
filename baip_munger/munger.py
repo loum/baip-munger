@@ -199,7 +199,6 @@ class Munger(object):
         current_parent = None
         prev_index = None
         tags_to_extend = []
-        tags_to_extend_index = []
 
         for tag in tags:
             parent = tag.getparent()
@@ -210,14 +209,14 @@ class Munger(object):
                 log.debug('Set current parent %s:"%s"' %
                           (current_parent, current_parent.tag))
                 tags_to_extend.append(tag)
-                tags_to_extend_index.append(index)
+                prev_index = index
                 continue
 
             if parent == current_parent:
-                if prev_index is None or index == (prev_index + 1):
-                    prev_index = index
+                if index == (prev_index + 1):
+                    log.debug('Extending tag: %s' %
+                              (lxml.html.tostring(tag)))
                     tags_to_extend.append(tag)
-                    tags_to_extend_index.append(index)
                     continue
                 else:
                     log.debug('Sequential index interrupted: inserting')
@@ -237,14 +236,12 @@ class Munger(object):
                                  xml)
 
             # Reset our control variables.
-            prev_index = None
+            prev_index = index
             del tags_to_extend[:]
             tags_to_extend.append(tag)
-            del tags_to_extend_index[:]
-            tags_to_extend_index.append(index)
 
         # Insert the laggards (if any).
-        if len(tags_to_extend_index):
+        if len(tags_to_extend):
             xml = build_xml(new_tag, tags_to_extend)
             child_xml_insert(prev_index,
                              len(tags_to_extend),

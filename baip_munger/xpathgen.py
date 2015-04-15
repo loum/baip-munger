@@ -169,10 +169,14 @@ class XpathGen(object):
             conf_item = {'xpath': xpath}
             attr = action.xpath('attributeName/text()')
             value = action.xpath('attributeValue/text()')
+            old_value = action.xpath('attributeOldValue/text()')
             if len(attr):
                 conf_item['attribute'] = attr[0]
                 if len(value):
                     conf_item['value'] = value[0]
+
+                if len(old_value):
+                    conf_item['old_value'] = old_value[0]
 
                 config_items.append(conf_item)
 

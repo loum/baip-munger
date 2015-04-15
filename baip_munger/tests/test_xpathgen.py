@@ -105,6 +105,7 @@ class TestXpathGen(unittest2.TestCase):
                          ('TableBAHeaderRow', 'TableHeading')),
                     'attribute': 'class',
                     'value': 'TableText',
+                    'old_value': 'TableHeading',
                 },
                 {
                     'xpath':
@@ -127,11 +128,19 @@ class TestXpathGen(unittest2.TestCase):
                     'attribute': 'nowrap',
                     'add': True,
                 },
+                {
+                    'xpath':
+                        ("//p[@class='%s']/span[@style='%s']" %
+                         ('MsoBodyText', 'font-family:Symbol')),
+                    'attribute': 'class',
+                    'value': 'MsoListBullet',
+                    'old_value': 'MsoBodyText',
+                },
             ],
             'strip_chars': [
                 {
                     'xpath': "//p[@class='MsoListBullet']",
-                    'chars': u'\xb7 '
+                    'chars': u'\xa0\xb7 '
                 }
             ],
             'replace_tags': [
@@ -203,7 +212,8 @@ class TestXpathGen(unittest2.TestCase):
                      ('TableBAHeaderRow', 'TableHeading')),
                 'attribute': 'class',
                 'value': 'TableText',
-            }
+                'old_value': 'TableHeading',
+            },
         ]
         msg = 'Update attribute config items error'
         self.assertListEqual(received, expected, msg)
@@ -219,7 +229,7 @@ class TestXpathGen(unittest2.TestCase):
                  ('TableBAHeaderRow', 'TableHeading'))
         section = xpathgen.root.xpath('//Doc/Section')
 
-        # when I parse a sectionDeleteAttribute configuration element
+        # when I parse a sectionAddAttribute configuration element
         # section[2] is the "sectionAddAttribute" element
         received = xpathgen._parse_add_attributes(xpath, section[2])
 
@@ -235,7 +245,7 @@ class TestXpathGen(unittest2.TestCase):
                 'attribute': 'style',
                 'value': 'margin-bottom:1.0pt',
                 'add': True,
-            }
+            },
         ]
         msg = 'Add attribute config items error'
         self.assertListEqual(received, expected, msg)
@@ -261,7 +271,7 @@ class TestXpathGen(unittest2.TestCase):
         expected = [
             {
                 'xpath': "//p[@class='MsoListBullet']",
-                'chars': u'\xb7 ',
+                'chars': u'\xa0\xb7 ',
             }
         ]
         msg = 'Strip chars config items error'

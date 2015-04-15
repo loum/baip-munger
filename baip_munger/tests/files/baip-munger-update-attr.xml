@@ -20,6 +20,7 @@
         <sectionUpdateAttribute>
             <attributeName>class</attributeName>
             <attributeValue>TableText</attributeValue>
+            <attributeOldValue>TableHeading</attributeOldValue>
         </sectionUpdateAttribute>
     </Section>
     <Section>
@@ -46,7 +47,7 @@
         <sectionDescription>Strip characters</sectionDescription>
         <xpath>//p[@class='MsoListBullet']</xpath>
         <sectionStripChars>
-            <stripChars>&#183; </stripChars>
+            <stripChars>&#160;&#183; </stripChars>
         </sectionStripChars>
     </Section>
     <Section>
@@ -62,5 +63,14 @@
         <sectionInsertTag>
             <newTag>ul</newTag>
         </sectionInsertTag>
+    </Section>
+    <Section>
+        <sectionDescription>Update attribute</sectionDescription>
+        <xpath>//p[@class='MsoBodyText']/span[@style='font-family:Symbol']</xpath>
+        <sectionUpdateAttribute>
+            <attributeName>class</attributeName>
+            <attributeValue>MsoListBullet</attributeValue>
+            <attributeOldValue>MsoBodyText</attributeOldValue>
+        </sectionUpdateAttribute>
     </Section>
 </Doc>
