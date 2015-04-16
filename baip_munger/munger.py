@@ -23,11 +23,12 @@ class Munger(object):
         if html is not None:
             self.root = html
 
-    def dump_root(self):
+    def dump_root(self, pretty_print=False):
         root = str()
 
         if self.root is not None:
-            root = lxml.html.tostring(self.__root)
+            root = lxml.html.tostring(self.__root,
+                                      pretty_print=pretty_print)
 
         return root
 
@@ -190,7 +191,7 @@ class Munger(object):
         def child_xml_insert(start_index, node_count, parent_element, xml):
             insert_index = start_index - node_count + 1
             log.info('Child element insert "%s ..." at index: %d' %
-                     (lxml.html.tostring(xml)[:70], insert_index))
+                     (lxml.html.tostring(xml), insert_index))
             parent_element.insert(insert_index, xml)
 
         log.info('Insert element tag XPath: "%s"' % xpath)
@@ -203,13 +204,17 @@ class Munger(object):
         for tag in tags:
             parent = tag.getparent()
             index = parent.index(tag)
+            log.debug('Index (current): %d' % index)
 
             if current_parent is None:
                 current_parent = parent
                 log.debug('Set current parent %s:"%s"' %
                           (current_parent, current_parent.tag))
+                log.debug('Extending tag (parent): %s' %
+                          (lxml.html.tostring(tag)))
                 tags_to_extend.append(tag)
                 prev_index = index
+                log.debug('Previous index (parent): %d' % prev_index)
                 continue
 
             if parent == current_parent:
@@ -217,6 +222,9 @@ class Munger(object):
                     log.debug('Extending tag: %s' %
                               (lxml.html.tostring(tag)))
                     tags_to_extend.append(tag)
+                    prev_index = index
+                    log.debug('Previous index (parent match): %d' %
+                              prev_index)
                     continue
                 else:
                     log.debug('Sequential index interrupted: inserting')
@@ -236,8 +244,11 @@ class Munger(object):
                                  xml)
 
             # Reset our control variables.
-            prev_index = index
+            prev_index = parent.index(tag)
+            log.debug('New index after insert: %d' % prev_index)
             del tags_to_extend[:]
+            log.debug('Extending tag (pass through): %s' %
+                      (lxml.html.tostring(tag)))
             tags_to_extend.append(tag)
 
         # Insert the laggards (if any).
