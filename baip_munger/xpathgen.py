@@ -1,5 +1,6 @@
 import lxml.etree
 
+import baip_munger.exception
 from logga.log import log
 
 
@@ -110,6 +111,9 @@ class XpathGen(object):
                 ]
 
         """
+        if self.root is None:
+            raise baip_munger.exception.MungerConfigError(1000)
+
         config_items = {'attributes': [],
                         'strip_chars': [],
                         'replace_tags': [],

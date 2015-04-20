@@ -159,6 +159,18 @@ class TestXpathGen(unittest2.TestCase):
         msg = 'Config item error'
         self.assertDictEqual(received, expected, msg)
 
+    def test_parse_configuration_no_config(self):
+        """Parse configuration: no config defined.
+        """
+        # Given a base Munger configuration instance
+        xpathgen = baip_munger.XpathGen()
+
+        # when I attempt to parse the configuration
+        # then I should receive an exception
+        msg = 'Config item error'
+        self.assertRaises(baip_munger.exception.MungerConfigError,
+                          xpathgen.parse_configuration)
+
     def test_parse_delete_attributes(self):
         """Parse delete attributes config items.
         """
