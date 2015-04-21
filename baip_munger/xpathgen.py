@@ -1,4 +1,5 @@
 import lxml.etree
+import os
 
 import baip_munger.exception
 from logga.log import log
@@ -30,7 +31,10 @@ class XpathGen(object):
     @root.setter
     def root(self, value):
         if value is not None:
-            self.__root = lxml.etree.parse(value)
+            if os.path.exists(value):
+                self.__root = lxml.etree.parse(value)
+            else:
+                raise baip_munger.exception.MungerConfigError(1000)
 
     def extract_xpath(self, conf_file=None):
         """Wrapper method around the XPath generation facility.
@@ -112,7 +116,7 @@ class XpathGen(object):
 
         """
         if self.root is None:
-            raise baip_munger.exception.MungerConfigError(1000)
+            raise baip_munger.exception.MungerConfigError(1001)
 
         config_items = {'attributes': [],
                         'strip_chars': [],

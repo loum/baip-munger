@@ -1,6 +1,7 @@
 import unittest2
 import os
 import lxml.etree
+import tempfile
 
 import baip_munger
 
@@ -167,7 +168,6 @@ class TestXpathGen(unittest2.TestCase):
 
         # when I attempt to parse the configuration
         # then I should receive an exception
-        msg = 'Config item error'
         self.assertRaises(baip_munger.exception.MungerConfigError,
                           xpathgen.parse_configuration)
 
@@ -342,6 +342,37 @@ class TestXpathGen(unittest2.TestCase):
         ]
         msg = 'Insert tag config items error'
         self.assertListEqual(received, expected, msg)
+
+    def test_missing_config_file(self):
+        """Attempt config parse: missing config file.
+        """
+        # Given I create an XpathGen() object
+        xpath_gen = baip_munger.XpathGen()
+
+        # and the config file provided is missing
+        conf_file_obj = tempfile.NamedTemporaryFile()
+        conf_file = conf_file_obj.name
+        conf_file_obj.close()
+
+        # when I attempt to parse the configuration
+        # then I should receive an exception
+        self.assertRaises(baip_munger.exception.MungerConfigError,
+                          xpath_gen.root,
+                          conf_file)
+
+    def test_config_file(self):
+        """Attempt config parse file.
+        """
+        # Given I create an XpathGen() object
+        xpath_gen = baip_munger.XpathGen()
+
+        # and a valid config file has been defined
+        xpath_gen.root = self._conf_path
+
+        # then I should receive a lxml.etree.ElementTree object
+        expected = xpath_gen.root
+        msg = 'Valid config file assignment should produce an ElementTree'
+        self.assertIsInstance(expected, lxml.etree._ElementTree, msg)
 
     @classmethod
     def tearDownClass(cls):
