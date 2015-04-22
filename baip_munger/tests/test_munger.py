@@ -1,14 +1,17 @@
 import unittest2
 import os
+import tempfile
 
 import baip_munger
+from filer.files import (get_directory_files_list,
+                         remove_files)
 
 
 class TestMunger(unittest2.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        test_dir = os.path.join('baip_munger', 'tests', 'files')
+        cls._test_dir = os.path.join('baip_munger', 'tests', 'files')
         results_dir = os.path.join('baip_munger', 'tests', 'results')
         cls._results_dir = os.path.join('baip_munger', 'tests', 'results')
         test_html_page = 'source.htm'
@@ -19,22 +22,22 @@ class TestMunger(unittest2.TestCase):
         grouped_dots = 'BA-NSB-GLO-1.1-combined_clean.html'
 
         # Source HTML page.
-        test_html_fh = open(os.path.join(test_dir, test_html_page))
+        test_html_fh = open(os.path.join(cls._test_dir, test_html_page))
         cls._source_html = test_html_fh.read()
         test_html_fh.close()
 
         # Source BAIP generated.
-        test_html_fh = open(os.path.join(test_dir, baip_generated))
+        test_html_fh = open(os.path.join(cls._test_dir, baip_generated))
         cls._source_baip_generated = test_html_fh.read()
         test_html_fh.close()
 
         # Source BAIP generated: dots.
-        test_html_fh = open(os.path.join(test_dir, baip_generated_dots))
+        test_html_fh = open(os.path.join(cls._test_dir, baip_generated_dots))
         cls._source_baip_generated_dots = test_html_fh.read()
         test_html_fh.close()
 
         # Source grouped dots.
-        test_html_fh = open(os.path.join(test_dir, grouped_dots))
+        test_html_fh = open(os.path.join(cls._test_dir, grouped_dots))
         cls._source_grouped_dots = test_html_fh.read()
         test_html_fh.close()
 
@@ -438,8 +441,78 @@ class TestMunger(unittest2.TestCase):
         msg = 'Element tag text strip error'
         self.assertEqual(received, expected, msg)
 
+    def test_munge(self):
+        """Munge a file.
+        """
+        # Given a file to munge
+        munge_infile = os.path.join(self._test_dir,
+                                    'BA-NSB-GLO-1.1-combined_clean.html')
+
+        # and a target munged file
+        temp_dir = tempfile.mkdtemp()
+        munge_outfile = os.path.join(temp_dir,
+                                     'BA-NSB-GLO-1.1-combined_clean.html')
+
+        # and a set of munging actions
+        # config_file = os.path.join(self._test_dir, 'baip-munger.xml')
+        config_file = os.path.join(self._test_dir,
+                                   'baip-munger-update-attr.xml')
+        conf = baip_munger.XpathGen(config_file)
+        actions = conf.parse_configuration()
+
+        # when I perform a munge action
+        munger = baip_munger.Munger()
+        received = munger.munge(actions, munge_infile, munge_outfile)
+
+        # then the munge should occur without error
+        msg = 'Munger UI munge should return True'
+        self.assertTrue(received, msg)
+
+        # and the munged file deposited to the Munger target directory
+        msg = 'Munged target file not created'
+        self.assertTrue(os.path.exists(munge_outfile), msg)
+
+        # Clean up
+        remove_files(get_directory_files_list(temp_dir))
+        os.removedirs(temp_dir)
+
+    def test_munge_missing_input_file(self):
+        """Munge a file: missing input file.
+        """
+        # Given a file to munge
+        munge_infile = 'banana'
+
+        # and a target munged file
+        temp_dir = tempfile.mkdtemp()
+        munge_outfile = os.path.join(temp_dir,
+                                     'BA-NSB-GLO-1.1-combined_clean.html')
+
+        # and a set of munging actions
+        config_file = os.path.join(self._test_dir,
+                                   'baip-munger-update-attr.xml')
+        conf = baip_munger.XpathGen(config_file)
+        actions = conf.parse_configuration()
+
+        # when I perform a munge action
+        munger = baip_munger.Munger()
+        received = munger.munge(actions, munge_infile, munge_outfile)
+
+        # then the munge should occur without error
+        msg = 'Munger UI munge (missing file) should return False'
+        self.assertFalse(received, msg)
+
+        # and the munged file should not be deposited to the Munger
+        # target directory
+        msg = 'Munged target file not created'
+        self.assertFalse(os.path.exists(munge_outfile), msg)
+
+        # Clean up
+        # remove_files(get_directory_files_list(temp_dir))
+        os.removedirs(temp_dir)
+
     @classmethod
     def tearDownClass(cls):
+        cls._test_dir = None
         cls._source_html = None
         cls._results_dir = None
         cls._source_with_table_removed_html = None
