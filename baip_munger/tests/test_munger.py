@@ -358,8 +358,66 @@ class TestMunger(unittest2.TestCase):
         munger.replace_tag(xpath, new_tag)
         received = munger.dump_root()
 
-        # the resultant HTML should present an updated element attribute
+        # the resultant HTML should present an updated element
         result_file = '1134-coal-and-hydrocarbons-replace-tag.htm'
+        result_fh = open(os.path.join(self._results_dir, result_file))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Element tag replace error'
+        self.assertEqual(received, expected, msg)
+
+    def test_replace_tag_and_add_new_attributes(self):
+        """Replace element tag: add new attributes.
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated_dots
+
+        # and an xpath definition to target a HTML element
+        xpath = ("//p[@class='%s']" % 'MsoListBullet')
+
+        # and an new tag name
+        new_tag = 'li'
+
+        # and the new tag's attributes
+        new_tag_attributes = [('class', 'MsoListBullet')]
+
+        # when I attempt to search and replace
+        munger = baip_munger.Munger(html)
+        munger.replace_tag(xpath, new_tag, new_tag_attributes)
+        received = munger.dump_root()
+
+        # the resultant HTML should present an updated element with new
+        # attributes
+        result_file = '1134-coal-and-hydrocarbons-replace-tag-new-attr.htm'
+        result_fh = open(os.path.join(self._results_dir, result_file))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Element tag replace error'
+        self.assertEqual(received, expected, msg)
+
+    def test_replace_tag_and_add_new_boolean_attributes(self):
+        """Replace element tag: add new boolean attributes.
+        """
+        # Given a source HTML page
+        html = self._source_baip_generated_dots
+
+        # and an xpath definition to target a HTML element
+        xpath = ("//p[@class='%s']" % 'MsoListBullet')
+
+        # and an new tag name
+        new_tag = 'li'
+
+        # and the new tag's boolean attributes
+        new_tag_attributes = [('hidden', None)]
+
+        # when I attempt to search and replace
+        munger = baip_munger.Munger(html)
+        munger.replace_tag(xpath, new_tag, new_tag_attributes)
+        received = munger.dump_root()
+
+        # the resultant HTML should present an updated element with
+        # new boolean attributes
+        result_file = '1134-coal-and-hydrocarbons-replace-tag-new-bool-attr.htm'
         result_fh = open(os.path.join(self._results_dir, result_file))
         expected = result_fh.read().rstrip()
         result_fh.close()
@@ -454,7 +512,6 @@ class TestMunger(unittest2.TestCase):
                                      'BA-NSB-GLO-1.1-combined_clean.html')
 
         # and a set of munging actions
-        # config_file = os.path.join(self._test_dir, 'baip-munger.xml')
         config_file = os.path.join(self._test_dir,
                                    'baip-munger-update-attr.xml')
         conf = baip_munger.XpathGen(config_file)
@@ -507,7 +564,7 @@ class TestMunger(unittest2.TestCase):
         self.assertFalse(os.path.exists(munge_outfile), msg)
 
         # Clean up
-        # remove_files(get_directory_files_list(temp_dir))
+        remove_files(get_directory_files_list(temp_dir))
         os.removedirs(temp_dir)
 
     @classmethod

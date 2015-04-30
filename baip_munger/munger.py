@@ -144,7 +144,7 @@ class Munger(object):
                                           value,
                                           old_value)
 
-    def replace_tag(self, xpath, new_tag):
+    def replace_tag(self, xpath, new_tag, new_tag_attributes=None):
         """Replace element tag from *xpath* expression search to
         *new_tag*.
 
@@ -152,6 +152,9 @@ class Munger(object):
             *xpath*: standard XPath expression used to query against *html*
 
             *new_tag*: new element tag name to replace
+
+            *new_tag_attributes*: list of tuples representing attributes
+            name|value pairs to add to the new tag
 
         """
         log.info('Replace element tag XPath: "%s"' % xpath)
@@ -161,6 +164,14 @@ class Munger(object):
                       (tag.tag, new_tag))
             new_element = lxml.etree.Element(new_tag)
             new_element.text = tag.text_content()
+
+            if new_tag_attributes is not None:
+                for new_tag_attribute in new_tag_attributes:
+                    name, value = new_tag_attribute
+                    if value is None:
+                        value = str()
+                    new_element.attrib[name] = value
+
             tag.getparent().replace(tag, new_element)
 
     def insert_tag(self, xpath, new_tag):
@@ -314,19 +325,25 @@ class Munger(object):
             log.error(str(e))
 
         if self.root is not None:
-            for action, rules in actions.iteritems():
-                if action == 'attributes':
-                    for rule in rules:
-                        self.update_element_attribute(**rule)
-                elif action == 'strip_chars':
-                    for rule in rules:
-                        self.strip_char(**rule)
-                elif action == 'replace_tags':
-                    for rule in rules:
-                        self.replace_tag(**rule)
-                elif action == 'insert_tags':
-                    for rule in rules:
-                        self.insert_tag(**rule)
+            attribute_actions = actions.get('attributes')
+            if attribute_actions is not None:
+                for rule in attribute_actions:
+                    self.update_element_attribute(**rule)
+
+            strip_chars_actions = actions.get('strip_chars')
+            if strip_chars_actions is not None:
+                for rule in strip_chars_actions:
+                    self.strip_char(**rule)
+
+            replace_tags_actions = actions.get('replace_tags')
+            if replace_tags_actions is not None:
+                for rule in replace_tags_actions:
+                    self.replace_tag(**rule)
+
+            insert_tags_actions = actions.get('insert_tags')
+            if insert_tags_actions is not None:
+                for rule in insert_tags_actions:
+                    self.insert_tag(**rule)
 
             log.info('Writing out munged content to "%s"' % munged_file)
             with open(munged_file, 'w') as out_fh:

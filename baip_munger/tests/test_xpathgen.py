@@ -146,13 +146,13 @@ class TestXpathGen(unittest2.TestCase):
             ],
             'replace_tags': [
                 {
-                    'xpath': "//p[@class='MsoListBullet']",
+                    'xpath': "//ul/p[@class='MsoListBullet']",
                     'new_tag': 'li'
                 }
             ],
             'insert_tags': [
                 {
-                    'xpath': "//div/li",
+                    'xpath': "//p[@class='MsoListBullet']",
                     'new_tag': 'ul'
                 }
             ],

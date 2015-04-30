@@ -52,14 +52,18 @@
     </Section>
     <Section>
         <sectionDescription>Replace tag</sectionDescription>
-        <xpath>//p[@class='MsoListBullet']</xpath>
+        <xpath>//ul/p[@class='MsoListBullet']</xpath>
         <sectionReplaceTag>
             <newTag>li</newTag>
+            <newTagAttribute>
+                <attributeName>class</attributeName>
+                <attributeValue>MsoListBullet</attributeValue>
+            </newTagAttribute>
         </sectionReplaceTag>
     </Section>
     <Section>
-        <sectionDescription>Replace tag</sectionDescription>
-        <xpath>//div/li</xpath>
+        <sectionDescription>Insert an unordered list</sectionDescription>
+        <xpath>//p[@class='MsoListBullet']</xpath>
         <sectionInsertTag>
             <newTag>ul</newTag>
         </sectionInsertTag>
