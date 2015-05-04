@@ -245,8 +245,31 @@ class XpathGen(object):
             new_tag = action.xpath('newTag/text()')
             log.debug('sectionReplaceTag value: "%s"' % new_tag)
 
+            # Check for attributes.
+            new_tag_attr = 'newTagAttribute'
+            new_attrs = action.xpath(new_tag_attr)
+            new_tag_attributes = []
+            for new_attr in new_attrs:
+                log.debug('newTagAttribute element found')
+
+                names = new_attr.xpath('attributeName/text()')
+                attr_name = None
+                if len(names):
+                    attr_name = names[0]
+
+                values = new_attr.xpath('attributeValue/text()')
+                attr_value = None
+                if len(values):
+                    attr_value = values[0]
+
+                if attr_name is not None:
+                    new_tag_attributes.append((attr_name, attr_value))
+                    log.debug('sectionReplaceTag attribute "%s"' %
+                              (new_tag_attributes[-1], ))
+
             if len(new_tag):
                 conf_item['new_tag'] = new_tag[0]
+                conf_item['new_tag_attributes'] = new_tag_attributes
 
                 config_items.append(conf_item)
 

@@ -147,6 +147,7 @@ class TestXpathGen(unittest2.TestCase):
             'replace_tags': [
                 {
                     'xpath': "//ul/p[@class='MsoListBullet']",
+                    'new_tag_attributes': [('class', 'MsoListBullet')],
                     'new_tag': 'li'
                 }
             ],
@@ -306,10 +307,12 @@ class TestXpathGen(unittest2.TestCase):
         # then I should receive a list of dictionary structures of the
         # form
         # [{'xpath': '<xpath_expr>',
-        #   'new_tag': '<new_tag>'}]
+        #   'new_tag': '<new_tag>',
+        #   'new_tag_attributes': [('<attr_name>', '<attr_value>'), ...]}]
         expected = [
             {
                 'xpath': "//p[@class='MsoListBullet']",
+                'new_tag_attributes': [('class', 'MsoListBullet')],
                 'new_tag': 'li',
             }
         ]
