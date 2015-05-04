@@ -165,12 +165,17 @@ class Munger(object):
             new_element = lxml.etree.Element(new_tag)
             new_element.text = tag.text_content()
 
-            if new_tag_attributes is not None:
+            if new_tag_attributes is not None and len(new_tag_attributes):
                 for new_tag_attribute in new_tag_attributes:
                     name, value = new_tag_attribute
                     if value is None:
                         value = str()
                     new_element.attrib[name] = value
+            else:
+                log.debug('Copying over existing attributes: "%s"' %
+                          tag.attrib)
+                for key, value in tag.attrib.iteritems():
+                    new_element.attrib[key] = value
 
             tag.getparent().replace(tag, new_element)
 
@@ -317,7 +322,6 @@ class Munger(object):
 
         munge_status = False
 
-        html = None
         try:
             with open(staged_file, 'r') as html_fh:
                 self.root = html_fh.read()
@@ -325,16 +329,6 @@ class Munger(object):
             log.error(str(e))
 
         if self.root is not None:
-            attribute_actions = actions.get('attributes')
-            if attribute_actions is not None:
-                for rule in attribute_actions:
-                    self.update_element_attribute(**rule)
-
-            strip_chars_actions = actions.get('strip_chars')
-            if strip_chars_actions is not None:
-                for rule in strip_chars_actions:
-                    self.strip_char(**rule)
-
             replace_tags_actions = actions.get('replace_tags')
             if replace_tags_actions is not None:
                 for rule in replace_tags_actions:
@@ -344,6 +338,16 @@ class Munger(object):
             if insert_tags_actions is not None:
                 for rule in insert_tags_actions:
                     self.insert_tag(**rule)
+
+            attribute_actions = actions.get('attributes')
+            if attribute_actions is not None:
+                for rule in attribute_actions:
+                    self.update_element_attribute(**rule)
+
+            strip_chars_actions = actions.get('strip_chars')
+            if strip_chars_actions is not None:
+                for rule in strip_chars_actions:
+                    self.strip_char(**rule)
 
             log.info('Writing out munged content to "%s"' % munged_file)
             with open(munged_file, 'w') as out_fh:
