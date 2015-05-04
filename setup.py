@@ -65,5 +65,6 @@ setup(name='python-baip-munger',
       author_email='lou.markovski@gmail.com',
       url='',
       scripts=['baip_munger/bin/baip-munger'],
-      packages=['baip_munger'],
+      packages=['baip_munger',
+                'baip_munger.exception'],
       package_data={'baip_munger': ['conf/*.xml.[0-9]*.[0-9]*.[0-9]*']})
