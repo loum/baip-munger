@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Section>
+        <sectionDescription>Replace tag</sectionDescription>
+        <xpath>//p[contains(@class, 'MsoListBullet')]</xpath>
+        <sectionReplaceTag>
+            <newTag>li</newTag>
+        </sectionReplaceTag>
+    </Section>
+    <Section>
+        <sectionDescription>Insert an unordered list</sectionDescription>
+        <xpath>//li[contains(@class, 'MsoListBullet')]</xpath>
+        <sectionInsertTag>
+            <newTag>ul</newTag>
+        </sectionInsertTag>
+    </Section>
+    <Section>
+        <sectionDescription>Insert an unordered list</sectionDescription>
+        <xpath>//ul/li[@class='MsoListBullet2']</xpath>
+        <sectionInsertTag>
+            <newTag>ul</newTag>
+        </sectionInsertTag>
+    </Section>
+    <Section>
+        <sectionDescription>Replace tag</sectionDescription>
+        <xpath>//p[contains(@class, 'MsoListNumber')]</xpath>
+        <sectionReplaceTag>
+            <newTag>li</newTag>
+        </sectionReplaceTag>
+    </Section>
+    <Section>
+        <sectionDescription>Insert an unordered list</sectionDescription>
+        <xpath>//li[contains(@class, 'MsoListNumber')]</xpath>
+        <sectionInsertTag>
+            <newTag>ol</newTag>
+        </sectionInsertTag>
+    </Section>
+    <Section>
+        <sectionDescription>Insert an unordered list</sectionDescription>
+        <xpath>//li[@class='MsoListNumber2']</xpath>
+        <sectionInsertTag>
+            <newTag>ol</newTag>
+        </sectionInsertTag>
+    </Section>
+    <Section>
+        <sectionDescription>Update attribute</sectionDescription>
+        <xpath>//ol/ol</xpath>
+        <sectionAddAttribute>
+            <attributeName>type</attributeName>
+            <attributeValue>a</attributeValue>
+        </sectionAddAttribute>
+    </Section>
+</Doc>

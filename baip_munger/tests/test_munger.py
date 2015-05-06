@@ -537,13 +537,12 @@ class TestMunger(unittest2.TestCase):
         """Munge a file: ordered list.
         """
         # Given a file to munge
-        munge_infile = os.path.join(self._test_dir,
-                                    'BA-LEB-GAL-261-1-SWReview-v00_clean.html')
+        test_file = 'BA-LEB-GAL-261-1-SWReview-v00_clean.html'
+        munge_infile = os.path.join(self._test_dir, test_file)
 
         # and a target munged file
         temp_dir = tempfile.mkdtemp()
-        munge_outfile = os.path.join(temp_dir,
-                                     'BA-LEB-GAL-261-1-SWReview-v00_clean.html')
+        munge_outfile = os.path.join(temp_dir, test_file)
 
         # and a set of munging actions with ordered list context
         config_file = os.path.join(self._test_dir,
@@ -562,6 +561,90 @@ class TestMunger(unittest2.TestCase):
         # and the munged file deposited to the Munger target directory
         msg = 'Munged target file not created'
         self.assertTrue(os.path.exists(munge_outfile), msg)
+
+        # Clean up
+        remove_files(get_directory_files_list(temp_dir))
+        os.removedirs(temp_dir)
+
+    def test_munge_unordered_list(self):
+        """Munge a file: unordered list.
+        """
+        # Given a file to munge
+        test_file = 'unordered_source.html'
+        munge_infile = os.path.join(self._test_dir, test_file)
+
+        # and a target munged file
+        temp_dir = tempfile.mkdtemp()
+        munge_outfile = os.path.join(temp_dir, test_file)
+
+        # and a set of munging actions with ordered list context
+        config_file = os.path.join(self._test_dir,
+                                   'baip-munger-unordered-list.xml')
+        conf = baip_munger.XpathGen(config_file)
+        actions = conf.parse_configuration()
+
+        # when I perform a munge action
+        munger = baip_munger.Munger()
+        received = munger.munge(actions, munge_infile, munge_outfile)
+
+        # then the munge should occur without error
+        msg = 'Munger UI munge should return True'
+        self.assertTrue(received, msg)
+
+        # and the munged file deposited to the Munger target directory
+        msg = 'Munged target file not created'
+        self.assertTrue(os.path.exists(munge_outfile), msg)
+
+        # the resultant HTML should present with modified tag text
+        result_file = 'unordered.html'
+        result_fh = open(os.path.join(self._results_dir, result_file))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Unordered list generation error'
+        received = munger.dump_root()
+        self.assertEqual(received, expected, msg)
+
+        # Clean up
+        remove_files(get_directory_files_list(temp_dir))
+        os.removedirs(temp_dir)
+
+    def test_munge_lists_combined(self):
+        """Munge a file: lists combined.
+        """
+        # Given a file to munge
+        test_file = 'list_source.html'
+        munge_infile = os.path.join(self._test_dir, test_file)
+
+        # and a target munged file
+        temp_dir = tempfile.mkdtemp()
+        munge_outfile = os.path.join(temp_dir, test_file)
+
+        # and a set of munging actions with ordered list context
+        config_file = os.path.join(self._test_dir,
+                                   'baip-munger-lists.xml')
+        conf = baip_munger.XpathGen(config_file)
+        actions = conf.parse_configuration()
+
+        # when I perform a munge action
+        munger = baip_munger.Munger()
+        received = munger.munge(actions, munge_infile, munge_outfile)
+
+        # then the munge should occur without error
+        msg = 'Munger UI munge should return True'
+        self.assertTrue(received, msg)
+
+        # and the munged file deposited to the Munger target directory
+        msg = 'Munged target file not created'
+        self.assertTrue(os.path.exists(munge_outfile), msg)
+
+        # the resultant HTML should present with modified tag text
+        result_file = 'lists.html'
+        result_fh = open(os.path.join(self._results_dir, result_file))
+        expected = result_fh.read().rstrip()
+        result_fh.close()
+        msg = 'Combined list generation error'
+        received = munger.dump_root()
+        self.assertEqual(received, expected, msg)
 
         # Clean up
         remove_files(get_directory_files_list(temp_dir))

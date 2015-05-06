@@ -224,7 +224,7 @@ class Munger(object):
 
             if current_parent is None:
                 current_parent = parent
-                log.debug('Set current parent %s:"%s"' %
+                log.debug('Set current parent (initial) %s:"%s"' %
                           (current_parent, current_parent.tag))
                 log.debug('Extending tag (parent): %s' %
                           (lxml.html.tostring(tag)))
@@ -249,7 +249,7 @@ class Munger(object):
 
             xml = build_xml(new_tag, tags_to_extend)
             if parent != current_parent:
-                current_parent.insert(index, xml)
+                current_parent.insert(prev_index - 1, xml)
                 current_parent = parent
                 log.debug('Set current parent %s:"%s"' %
                           (current_parent, current_parent.tag))
